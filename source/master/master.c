@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 	int layerAmount = 3;
 
 	int layerSizes[] = {2, 3, 1};
-	int layerActivs[] = {1, 1, 1};
+	int layerActivs[] = {1, 1, 3};
 
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -75,14 +75,28 @@ int main(int argc, char* argv[])
   printf("1 1 => %f (0)\n\n", outputs[0]);
 
 
-  float learnRate = 10;
+
+  float learnRate = 0.7;
   float momentum = 0.2;
   int batchSize = 4;
-  int epochAmount = 1000;
+  int epochAmount = 1;
 
   for(int epochIndex = 0; epochIndex < epochAmount; epochIndex += 1)
   {
-    train_network_minbat(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, (float**) inputs, (float**) targets, batchSize);
+    // train_network_minbat(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize);
+
+    int* randIndexis = create_integ_array(batchSize);
+
+    random_indexis_array(randIndexis, batchSize);
+
+    for(int index = 0; index < batchSize; index += 1)
+    {
+      int randIndex = randIndexis[index];
+
+      train_network_stcast(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs[randIndex], targets[randIndex]);
+    }
+
+    free_integ_array(randIndexis, batchSize);
   }
 
 

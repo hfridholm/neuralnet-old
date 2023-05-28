@@ -11,6 +11,32 @@ int maximum_layer_shape(const int layerSizes[], int layerAmount)
   return maxShape;
 }
 
+void addit_oldwei_deltas(float*** weightDeltas, int layerAmount, const int layerSizes[], float momentum, float*** oldWeightDeltas)
+{
+  int maxShape = maximum_layer_shape(layerSizes, layerAmount);
+
+  float*** tempWeightDeltas = create_fmatrix_array(layerAmount - 1, maxShape, maxShape);
+
+  multi_scale_fmatarr(tempWeightDeltas, oldWeightDeltas, layerAmount - 1, maxShape, maxShape, momentum);
+
+  addit_elem_fmatarr(weightDeltas, weightDeltas, tempWeightDeltas, layerAmount - 1, maxShape, maxShape);
+
+  free_fmatrix_array(tempWeightDeltas, layerAmount - 1, maxShape, maxShape);
+}
+
+void addit_oldbia_deltas(float** biasDeltas, int layerAmount, const int layerSizes[], float momentum, float** oldBiasDeltas)
+{
+  int maxShape = maximum_layer_shape(layerSizes, layerAmount);
+
+  float** tempBiasDeltas = create_float_matrix(layerAmount - 1, maxShape);
+
+  multi_scale_fmatrix(tempBiasDeltas, oldBiasDeltas, layerAmount - 1, maxShape, momentum);
+
+  addit_elem_fmatrix(biasDeltas, biasDeltas, tempBiasDeltas, layerAmount - 1, maxShape);
+
+  free_float_matrix(tempBiasDeltas, layerAmount - 1, maxShape);
+}
+
 bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], float learnRate, float momentum, float*** weightDerivs, float** biasDerivs, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
@@ -19,27 +45,14 @@ bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
 
   if(oldWeightDeltas != NULL)
   {
-    float*** tempWeightDeltas = create_fmatrix_array(layerAmount - 1, maxShape, maxShape);
-
-    multi_scale_fmatarr(tempWeightDeltas, oldWeightDeltas, layerAmount - 1, maxShape, maxShape, momentum);
-
-    addit_elem_fmatarr(weightDeltas, weightDeltas, tempWeightDeltas, layerAmount - 1, maxShape, maxShape);
-
-    free_fmatrix_array(tempWeightDeltas, layerAmount - 1, maxShape, maxShape);
+    addit_oldwei_deltas(weightDeltas, layerAmount, layerSizes, momentum, oldWeightDeltas);
   }
-
 
   multi_scale_fmatrix(biasDeltas, biasDerivs, layerAmount - 1, maxShape, -learnRate);
 
   if(oldBiasDeltas != NULL)
   {
-    float** tempBiasDeltas = create_float_matrix(layerAmount - 1, maxShape);
-
-    multi_scale_fmatrix(tempBiasDeltas, oldBiasDeltas, layerAmount - 1, maxShape, momentum);
-
-    addit_elem_fmatrix(biasDeltas, biasDeltas, tempBiasDeltas, layerAmount - 1, maxShape);
-
-    free_float_matrix(tempBiasDeltas, layerAmount - 1, maxShape);
+    addit_oldbia_deltas(biasDeltas, layerAmount, layerSizes, momentum, oldBiasDeltas);
   }
 
   return true;
@@ -49,11 +62,11 @@ void multi_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, 
 {
   float* activDerivs = create_float_vector(layerWidth);
 
-  float* (*layer_derivat_funct)(float*, float*, int);
+  float (*derivat_funct)(float);
 
-  if(parse_derivat_funct(&layer_derivat_funct, layerActive))
+  if(parse_derivat_funct(&derivat_funct, layerActive))
   {
-    layer_derivat_funct(activDerivs, layerValues, layerWidth);
+    layer_derivat_funct(activDerivs, layerValues, layerWidth, derivat_funct);
   }
   else printf("Error: parse_derivat_funct\n");
 
@@ -66,7 +79,6 @@ bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSize
 {
   cross_entropy_deriv(nodeDerivs[layerAmount - 2], nodeValues[layerAmount - 1], targets, layerSizes[layerAmount - 1]);
 
-  // Note: When this is not here, the program preforms better for some reason!?
   multi_activ_derivs(nodeDerivs[layerAmount - 2], nodeValues[layerAmount - 1], layerSizes[layerAmount - 1], layerActivs[layerAmount - 1]);
 
   for(int layerIndex = (layerAmount - 1); layerIndex >= 2; layerIndex -= 1)
@@ -124,13 +136,13 @@ bool create_node_values(float** nodeValues, int layerAmount, const int layerSize
     addit_elem_fvector(nodeValues[layerIndex], nodeValues[layerIndex], biases[layerIndex - 1], layerHeight);
 
 
-    float* (*layer_activat_funct)(float*, float*, int);
+    float (*activat_funct)(float);
 
-    if(parse_activat_funct(&layer_activat_funct, layerActivs[layerIndex - 1]))
+    if(parse_activat_funct(&activat_funct, layerActivs[layerIndex - 1]))
     {
-      layer_activat_funct(nodeValues[layerIndex], nodeValues[layerIndex], layerHeight);
+      layer_activat_funct(nodeValues[layerIndex], nodeValues[layerIndex], layerHeight, activat_funct);
     }
-    else printf("Error: parse_derivat_funct\n");
+    else printf("Error: parse_activat_funct\n");
   }
   return true;
 }

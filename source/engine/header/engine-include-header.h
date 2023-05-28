@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "neural-network-actions.h"
 #include "neural-network-handler.h"

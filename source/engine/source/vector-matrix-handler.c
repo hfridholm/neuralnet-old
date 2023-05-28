@@ -7,15 +7,60 @@ float create_random_float(float minimum, float maximum)
   return (fraction * (maximum - minimum) + minimum);
 }
 
+int create_random_integ(int minimum, int maximum)
+{
+  float fraction = ((float) rand() / (float) RAND_MAX);
+
+  return (fraction * (maximum - minimum) + minimum);
+}
+
 float* create_float_vector(int length)
 {
   float* vector = malloc(sizeof(float) * length);
 
+  memset(vector, 0.0f, sizeof(float) * length);
+
+  return vector;
+}
+
+int* create_integ_array(int length)
+{
+  int* array = malloc(sizeof(int) * length);
+
+  memset(array, 0, sizeof(int) * length);
+
+  return array;
+}
+
+void free_integ_array(int* array, int length) {free(array);}
+
+int* random_indexis_array(int* array, int length)
+{
   for(int index = 0; index < length; index += 1)
   {
-    vector[index] = 0.0f;
+    array[index] = index;
   }
-  return vector;
+  return shuffle_integ_array(array, length);
+}
+
+int* shuffle_integ_array(int* array, int length)
+{
+  for(int index = 0; index < length; index += 1)
+  {
+    int randIndex = create_random_integ(0, length - 1);
+
+    switch_array_ints(array, index, randIndex);
+  }
+  return array;
+}
+
+int* switch_array_ints(int* array, int index1, int index2)
+{
+  int temp = array[index1];
+  array[index1] = array[index2];
+  array[index2] = temp;
+
+  return array; 
 }
 
 float** create_float_matrix(int height, int width)

@@ -5,15 +5,23 @@ float activat_funct_sigm(float floatValue);
 
 float derivat_funct_sigm(float sigmValue);
 
+float activat_funct_relu(float floatValue);
 
-float* layer_activat_sigm(float* result, float* nodes, int amount);
+float derivat_funct_relu(float sigmValue);
 
-float* layer_derivat_sigm(float* result, float* nodes, int amount);
+float activat_funct_tanh(float floatValue);
+
+float derivat_funct_tanh(float sigmValue);
 
 
-bool parse_activat_funct(float* (**layer_activat_funct)(float*, float*, int), int activatCode);
+float* layer_activat_funct(float* result, float* nodes, int amount, float (*activat_funct)(float));
 
-bool parse_derivat_funct(float* (**layer_derivat_funct)(float*, float*, int), int activatCode);
+float* layer_derivat_funct(float* result, float* nodes, int amount, float (*derivat_funct)(float));
+
+
+bool parse_activat_funct(float (**activat_funct)(float), int activatCode);
+
+bool parse_derivat_funct(float (**derivat_funct)(float), int activatCode);
 
 
 float* cross_entropy_deriv(float* result, float* nodes, float* targets, int amount);

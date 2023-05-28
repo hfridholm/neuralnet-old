@@ -75,4 +75,14 @@ void print_float_matrix(float** matrix, int height, int width);
 
 void print_float_vector(float* vector, int length);
 
+int* create_integ_array(int length);
+
+void free_integ_array(int* array, int length);
+
+int* random_indexis_array(int* array, int length);
+
+int* shuffle_integ_array(int* array, int length);
+
+int* switch_array_ints(int* array, int index1, int index2);
+
 #endif
