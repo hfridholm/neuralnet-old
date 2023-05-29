@@ -1,29 +1,40 @@
 #ifndef NEURAL_ACTIVATE_FUNCS_H
 #define NEURAL_ACTIVATE_FUNCS_H
 
-float activat_funct_sigm(float floatValue);
+float sigmoid_activ_value(float floatValue);
 
-float derivat_funct_sigm(float sigmValue);
+float sigmoid_deriv_value(float sigmValue);
 
-float activat_funct_relu(float floatValue);
+float relu_activ_value(float floatValue);
 
-float derivat_funct_relu(float sigmValue);
+float relu_deriv_value(float reluValue);
 
-float activat_funct_tanh(float floatValue);
+float tanh_activ_value(float floatValue);
 
-float derivat_funct_tanh(float sigmValue);
-
-
-float* layer_activat_funct(float* result, float* nodes, int amount, float (*activat_funct)(float));
-
-float* layer_derivat_funct(float* result, float* nodes, int amount, float (*derivat_funct)(float));
-
-
-bool parse_activat_funct(float (**activat_funct)(float), int activatCode);
-
-bool parse_derivat_funct(float (**derivat_funct)(float), int activatCode);
-
+float tanh_deriv_value(float tanhValue);
 
 float* cross_entropy_deriv(float* result, float* nodes, float* targets, int amount);
+
+float* softmax_activ_values(float* result, float* nodes, int amount);
+
+float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWidth);
+
+float* relu_activ_values(float* activValues, float* layerValues, int layerWidth);
+
+float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth);
+
+float** softmax_deriv_values(float** result, float* procents, int amount);
+
+float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWidth);
+
+float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWidth);
+
+float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth);
+
+float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth);
+
+void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, int layerActive);
+
+void layer_activ_values(float* activValues, float* layerValues, int layerWidth, int layerActive);
 
 #endif

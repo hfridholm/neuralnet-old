@@ -57,15 +57,15 @@ void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, int l
 	{
 		frwrd_create_derivs(weightDerivs, biasDerivs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[inputIndex], targets[inputIndex]);
 
-		meanWeightDerivs = addit_elem_fmatarr(meanWeightDerivs, meanWeightDerivs, weightDerivs, layerAmount - 1, maxShape, maxShape);
-		meanBiasDerivs = addit_elem_fmatrix(meanBiasDerivs, meanBiasDerivs, biasDerivs, layerAmount - 1, maxShape);
+		addit_elem_fmatarr(meanWeightDerivs, meanWeightDerivs, weightDerivs, layerAmount - 1, maxShape, maxShape);
+		addit_elem_fmatrix(meanBiasDerivs, meanBiasDerivs, biasDerivs, layerAmount - 1, maxShape);
 	}
 
 	free_fmatrix_array(weightDerivs, layerAmount - 1, maxShape, maxShape);
 	free_float_matrix(biasDerivs, layerAmount - 1, maxShape);
 
-	meanWeightDerivs = multi_scale_fmatarr(meanWeightDerivs, meanWeightDerivs, layerAmount - 1, maxShape, maxShape, 1.0f / batchSize);
-  	meanBiasDerivs = multi_scale_fmatrix(meanBiasDerivs, meanBiasDerivs, layerAmount - 1, maxShape, 1.0f / batchSize);
+	multi_scale_fmatarr(meanWeightDerivs, meanWeightDerivs, layerAmount - 1, maxShape, maxShape, 1.0f / batchSize);
+  multi_scale_fmatrix(meanBiasDerivs, meanBiasDerivs, layerAmount - 1, maxShape, 1.0f / batchSize);
 }
 
 void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize)
@@ -92,8 +92,8 @@ bool train_network_minbat(int layerAmount, const int layerSizes[], const int lay
 
   minbat_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize);
 
-  weights = addit_elem_fmatarr(weights, weights, weightDeltas, layerAmount - 1, maxShape, maxShape);
-  biases = addit_elem_fmatrix(biases, biases, biasDeltas, layerAmount - 1, maxShape);
+  addit_elem_fmatarr(weights, weights, weightDeltas, layerAmount - 1, maxShape, maxShape);
+  addit_elem_fmatrix(biases, biases, biasDeltas, layerAmount - 1, maxShape);
 
   free_fmatrix_array(weightDeltas, layerAmount - 1, maxShape, maxShape);
   free_float_matrix(biasDeltas, layerAmount - 1, maxShape);
@@ -109,7 +109,7 @@ bool frwrd_network_inputs(float* outputs, int layerAmount, const int layerSizes[
 
 	create_node_values(nodeValues, layerAmount, layerSizes, layerActivs, weights, biases, inputs);
 
-	outputs = copy_float_vector(outputs, nodeValues[layerAmount - 1], layerSizes[layerAmount - 1]);
+	copy_float_vector(outputs, nodeValues[layerAmount - 1], layerSizes[layerAmount - 1]);
 
 	free_float_matrix(nodeValues, layerAmount, maxShape);
 

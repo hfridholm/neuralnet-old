@@ -58,28 +58,11 @@ bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
   return true;
 }
 
-void multi_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, int layerActive)
-{
-  float* activDerivs = create_float_vector(layerWidth);
-
-  float (*derivat_funct)(float);
-
-  if(parse_derivat_funct(&derivat_funct, layerActive))
-  {
-    layer_derivat_funct(activDerivs, layerValues, layerWidth, derivat_funct);
-  }
-  else printf("Error: parse_derivat_funct\n");
-
-  multi_elem_fvector(layerDerivs, layerDerivs, activDerivs, layerWidth);
-
-  free_float_vector(activDerivs, layerWidth);
-}
-
 bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets)
 {
   cross_entropy_deriv(nodeDerivs[layerAmount - 2], nodeValues[layerAmount - 1], targets, layerSizes[layerAmount - 1]);
 
-  multi_activ_derivs(nodeDerivs[layerAmount - 2], nodeValues[layerAmount - 1], layerSizes[layerAmount - 1], layerActivs[layerAmount - 1]);
+  apply_activ_derivs(nodeDerivs[layerAmount - 2], nodeValues[layerAmount - 1], layerSizes[layerAmount - 1], layerActivs[layerAmount - 2]);
 
   for(int layerIndex = (layerAmount - 1); layerIndex >= 2; layerIndex -= 1)
   {
@@ -94,7 +77,7 @@ bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSize
 
     free_float_matrix(weightTransp, layerWidth, layerHeight);
 
-    multi_activ_derivs(nodeDerivs[layerIndex - 2], nodeValues[layerIndex - 1], layerWidth, layerActivs[layerIndex - 1]);
+    apply_activ_derivs(nodeDerivs[layerIndex - 2], nodeValues[layerIndex - 1], layerWidth, layerActivs[layerIndex - 2]);
   }
   return true;
 }
@@ -135,14 +118,7 @@ bool create_node_values(float** nodeValues, int layerAmount, const int layerSize
 
     addit_elem_fvector(nodeValues[layerIndex], nodeValues[layerIndex], biases[layerIndex - 1], layerHeight);
 
-
-    float (*activat_funct)(float);
-
-    if(parse_activat_funct(&activat_funct, layerActivs[layerIndex - 1]))
-    {
-      layer_activat_funct(nodeValues[layerIndex], nodeValues[layerIndex], layerHeight, activat_funct);
-    }
-    else printf("Error: parse_activat_funct\n");
+    layer_activ_values(nodeValues[layerIndex], nodeValues[layerIndex], layerHeight, layerActivs[layerIndex - 1]);
   }
   return true;
 }

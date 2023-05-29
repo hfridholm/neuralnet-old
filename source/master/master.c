@@ -8,10 +8,10 @@ int main(int argc, char* argv[])
 {
 	srand(time(NULL));
 
-	int layerAmount = 3;
+	int layerAmount = 4;
 
-	int layerSizes[] = {2, 3, 1};
-	int layerActivs[] = {1, 1, 3};
+	int layerSizes[] = {2, 16, 16, 2};
+	int layerActivs[] = {1, 1, 1};
 
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -29,12 +29,12 @@ int main(int argc, char* argv[])
     {1.0, 1.0}
   };
 
-  float hardTargets[4][1] =
+  float hardTargets[4][2] =
   {
-    {0.0},
-    {1.0},
-    {1.0},
-    {0.0}
+    {0.0, 1.0},
+    {1.0, 0.0},
+    {1.0, 0.0},
+    {0.0, 1.0}
   };
 
   float** inputs = create_float_matrix(4, 2);
@@ -55,31 +55,39 @@ int main(int argc, char* argv[])
     }
   }
 
-  float* outputs = create_float_vector(layerSizes[layerAmount - 1]);
-
-
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[0]);
-
-  printf("0 0 => %f (0)\n", outputs[0]);
-
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[1]);
-
-  printf("1 0 => %f (1)\n", outputs[0]);
-
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[2]);
-
-  printf("0 1 => %f (1)\n", outputs[0]);
-
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[3]);
-
-  printf("1 1 => %f (0)\n\n", outputs[0]);
-
 
 
   float learnRate = 0.7;
   float momentum = 0.2;
   int batchSize = 4;
-  int epochAmount = 1;
+  int epochAmount = 1000;
+
+
+  float* outputs = create_float_vector(layerSizes[layerAmount - 1]);
+
+
+
+  for(int index = 0; index < batchSize; index += 1)
+  {
+    frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[index]);
+
+    printf("(");
+    for(int iIndex = 0; iIndex < layerSizes[0]; iIndex += 1)
+    {
+      printf("%.2f ", inputs[index][iIndex]);
+    }
+    printf(") ->");
+
+    printf("(");
+    for(int oIndex = 0; oIndex < layerSizes[layerAmount - 1]; oIndex += 1)
+    {
+      printf("%.2f ", outputs[oIndex]);
+    }
+    printf(")\n");
+  }
+  printf("\n");
+
+
 
   for(int epochIndex = 0; epochIndex < epochAmount; epochIndex += 1)
   {
@@ -100,21 +108,25 @@ int main(int argc, char* argv[])
   }
 
 
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[0]);
+  for(int index = 0; index < batchSize; index += 1)
+  {
+    frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[index]);
 
-  printf("0 0 => %f (0)\n", outputs[0]);
+    printf("(");
+    for(int iIndex = 0; iIndex < layerSizes[0]; iIndex += 1)
+    {
+      printf("%.2f ", inputs[index][iIndex]);
+    }
+    printf(") ->");
 
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[1]);
-
-  printf("1 0 => %f (1)\n", outputs[0]);
-
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[2]);
-
-  printf("0 1 => %f (1)\n", outputs[0]);
-
-  frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[3]);
-
-  printf("1 1 => %f (0)\n\n", outputs[0]);
+    printf("(");
+    for(int oIndex = 0; oIndex < layerSizes[layerAmount - 1]; oIndex += 1)
+    {
+      printf("%.2f ", outputs[oIndex]);
+    }
+    printf(")\n");
+  }
+  printf("\n");
 
 
 
