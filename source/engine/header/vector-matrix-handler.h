@@ -57,6 +57,8 @@ float** fmatrix_elem_action(float** result, float** matrix, int height, int widt
 
 float* fvector_elem_action(float* result, float* vector, int length, float (*float_action_funct)(float));
 
+float*** copy_fmatrix_array(float*** destin, float*** matarr, int amount, int height, int width);
+
 float** copy_float_matrix(float** destin, float** matrix, int height, int width);
 
 float* copy_float_vector(float* destin, float* vector, int length);

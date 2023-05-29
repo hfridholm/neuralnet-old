@@ -1,24 +1,18 @@
 #include "../header/engine-include-header.h"
 
-bool train_network_stcast(int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets)
+bool train_network_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
-  float*** weightDeltas = create_fmatrix_array(layerAmount - 1, maxShape, maxShape);
-  float** biasDeltas = create_float_matrix(layerAmount - 1, maxShape);
-
-  stcast_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets);
+  stcast_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, oldWeightDeltas, oldBiasDeltas);
 
   addit_elem_fmatarr(weights, weights, weightDeltas, layerAmount - 1, maxShape, maxShape);
   addit_elem_fmatrix(biases, biases, biasDeltas, layerAmount - 1, maxShape);
 
-  free_fmatrix_array(weightDeltas, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(biasDeltas, layerAmount - 1, maxShape);
-
   return true;
 }
 
-void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets)
+void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
 	int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -27,7 +21,7 @@ void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
 
   frwrd_create_derivs(weightDerivs, biasDerivs, layerAmount, layerSizes, layerActivs, weights, biases, inputs, targets);
 
-  create_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, learnRate, momentum, weightDerivs, biasDerivs, NULL, NULL);
+  create_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, learnRate, momentum, weightDerivs, biasDerivs, oldWeightDeltas, oldBiasDeltas);
 
   free_fmatrix_array(weightDerivs, layerAmount - 1, maxShape, maxShape);
   free_float_matrix(biasDerivs, layerAmount - 1, maxShape);
@@ -68,7 +62,7 @@ void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, int l
   multi_scale_fmatrix(meanBiasDerivs, meanBiasDerivs, layerAmount - 1, maxShape, 1.0f / batchSize);
 }
 
-void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize)
+void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
 	int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -77,26 +71,20 @@ void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
 
 	mean_weibia_derivs(meanWeightDerivs, meanBiasDerivs, layerAmount, layerSizes, layerActivs, weights, biases, inputs, targets, batchSize);
 
-	create_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, learnRate, momentum, meanWeightDerivs, meanBiasDerivs, NULL, NULL);
+	create_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, learnRate, momentum, meanWeightDerivs, meanBiasDerivs, oldWeightDeltas, oldBiasDeltas);
 
 	free_fmatrix_array(meanWeightDerivs, layerAmount - 1, maxShape, maxShape);
 	free_float_matrix(meanBiasDerivs, layerAmount - 1, maxShape);
 }
 
-bool train_network_minbat(int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize)
+bool train_network_minbat(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
-  float*** weightDeltas = create_fmatrix_array(layerAmount - 1, maxShape, maxShape);
-  float** biasDeltas = create_float_matrix(layerAmount - 1, maxShape);
-
-  minbat_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize);
+  minbat_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize, oldWeightDeltas, oldBiasDeltas);
 
   addit_elem_fmatarr(weights, weights, weightDeltas, layerAmount - 1, maxShape, maxShape);
   addit_elem_fmatrix(biases, biases, biasDeltas, layerAmount - 1, maxShape);
-
-  free_fmatrix_array(weightDeltas, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(biasDeltas, layerAmount - 1, maxShape);
 
   return true;
 }
@@ -115,3 +103,53 @@ bool frwrd_network_inputs(float* outputs, int layerAmount, const int layerSizes[
 
   return true;
 }
+
+void train_epochs_stcast(int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount)
+{
+	int maxShape = maximum_layer_shape(layerSizes, layerAmount);
+
+	float*** weightDeltas = create_fmatrix_array(layerAmount - 1, maxShape, maxShape);
+  float** biasDeltas = create_float_matrix(layerAmount - 1, maxShape);
+
+  float*** oldWeightDeltas = create_fmatrix_array(layerAmount - 1, maxShape, maxShape);
+  float** oldBiasDeltas = create_float_matrix(layerAmount - 1, maxShape);
+
+  for(int epochIndex = 0; epochIndex < epochAmount; epochIndex += 1)
+  {
+    train_epoch_stcast(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize, oldWeightDeltas, oldBiasDeltas);
+  }
+
+  free_fmatrix_array(oldWeightDeltas, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(oldBiasDeltas, layerAmount - 1, maxShape);
+
+  free_fmatrix_array(weightDeltas, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(biasDeltas, layerAmount - 1, maxShape);
+}
+
+void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
+{
+	int maxShape = maximum_layer_shape(layerSizes, layerAmount);
+
+	int* randIndexis = create_integ_array(batchSize);
+
+  random_indexis_array(randIndexis, batchSize);
+
+  for(int index = 0; index < batchSize; index += 1)
+  {
+    int randIndex = randIndexis[index];
+
+    train_network_stcast(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs[randIndex], targets[randIndex], oldWeightDeltas, oldBiasDeltas);
+
+    copy_fmatrix_array(oldWeightDeltas, weightDeltas, layerAmount - 1, maxShape, maxShape);
+    copy_float_matrix(oldBiasDeltas, biasDeltas, layerAmount - 1, maxShape);
+  }
+
+  free_integ_array(randIndexis, batchSize);
+}
+
+/* This is just some function that I thought might would be implemented in the future
+void train_stcast(int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int maxTime)
+{
+
+}
+*/

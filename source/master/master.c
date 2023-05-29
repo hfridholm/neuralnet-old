@@ -21,6 +21,10 @@ int main(int argc, char* argv[])
   weights = fill_fmatarr_random(weights, layerAmount - 1, maxShape, maxShape, -1.0, +1.0);
   biases = fill_fmatrix_random(biases, layerAmount - 1, maxShape, -1.0, +1.0);
 
+
+
+  int batchSize = 4;
+
   float hardInputs[4][2] =
   {
     {0.0, 0.0},
@@ -58,8 +62,7 @@ int main(int argc, char* argv[])
 
 
   float learnRate = 0.7;
-  float momentum = 0.2;
-  int batchSize = 4;
+  float momentum = 0.5;
   int epochAmount = 1000;
 
 
@@ -88,25 +91,8 @@ int main(int argc, char* argv[])
   printf("\n");
 
 
-
-  for(int epochIndex = 0; epochIndex < epochAmount; epochIndex += 1)
-  {
-    // train_network_minbat(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize);
-
-    int* randIndexis = create_integ_array(batchSize);
-
-    random_indexis_array(randIndexis, batchSize);
-
-    for(int index = 0; index < batchSize; index += 1)
-    {
-      int randIndex = randIndexis[index];
-
-      train_network_stcast(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs[randIndex], targets[randIndex]);
-    }
-
-    free_integ_array(randIndexis, batchSize);
-  }
-
+  train_epochs_stcast(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize, epochAmount);
+ 
 
   for(int index = 0; index < batchSize; index += 1)
   {

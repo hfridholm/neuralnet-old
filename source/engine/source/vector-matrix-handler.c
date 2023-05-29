@@ -348,14 +348,20 @@ float** duplic_float_matrix(float** matrix, int height, int width)
   return copy_float_matrix(duplic, matrix, height, width);
 }
 
+float*** copy_fmatrix_array(float*** destin, float*** matarr, int amount, int height, int width)
+{
+  for(int index = 0; index < amount; index += 1)
+  {
+    copy_float_matrix(destin[index], matarr[index], height, width);
+  }
+  return destin;
+}
+
 float** copy_float_matrix(float** destin, float** matrix, int height, int width)
 {
-  for(int hIndex = 0; hIndex < height; hIndex += 1)
+  for(int index = 0; index < height; index += 1)
   {
-    for(int wIndex = 0; wIndex < width; wIndex += 1)
-    {
-      destin[hIndex][wIndex] = matrix[hIndex][wIndex];
-    }
+    copy_float_vector(destin[index], matrix[index], width);
   }
   return destin;
 }
