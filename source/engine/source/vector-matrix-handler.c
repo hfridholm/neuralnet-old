@@ -91,7 +91,7 @@ void free_float_matrix(float** matrix, int height, int width)
 {
   for(int index = 0; index < height; index += 1)
   {
-    free(matrix[index]);
+    free_float_vector(matrix[index], width);
   }
   free(matrix);
 }
