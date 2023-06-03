@@ -68,11 +68,11 @@ bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSize
   {
     int layerHeight = layerSizes[layerIndex];
     int layerWidth = layerSizes[layerIndex - 1];
-    
+
     float** weightTransp = create_float_matrix(layerWidth, layerHeight);
 
     transp_float_matrix(weightTransp, weights[layerIndex - 1], layerHeight, layerWidth);
-    
+
     dotprod_fmatrix_vector(nodeDerivs[layerIndex - 2], weightTransp, layerWidth, layerHeight, nodeDerivs[layerIndex - 1], layerHeight);
 
     free_float_matrix(weightTransp, layerWidth, layerHeight);
@@ -96,7 +96,7 @@ bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, int layerAm
     int layerWidth = layerSizes[layerIndex - 1];
 
     dotprod_float_vector(weightDerivs[layerIndex - 1], nodeDerivs[layerIndex - 1], layerHeight, nodeValues[layerIndex - 1], layerWidth);
-    
+
     copy_float_vector(biasDerivs[layerIndex - 1], nodeDerivs[layerIndex - 1], layerHeight);
   }
 

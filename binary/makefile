@@ -3,7 +3,7 @@ ROOT_FOLDER := ..
 FILES_TARGET := files
 CLEAN_TARGET := clean
 
-RUNBLE_FILES = master
+RUNBLE_FILES = master dataset
 
 COMPILE_FLAGS := -Wall -Werror -g -Og
 COMPILE_PRGRM := gcc

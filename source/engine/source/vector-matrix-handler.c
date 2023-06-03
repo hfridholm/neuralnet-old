@@ -402,7 +402,7 @@ void print_fmatrix_array(float*** matrixArray, int amount, int height, int width
   for(int index = 0; index < amount; index += 1)
   {
     print_float_matrix(matrixArray[index], height, width);
-  
+
     printf("\n");
   }
 }

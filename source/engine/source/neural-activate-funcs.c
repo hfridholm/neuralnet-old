@@ -88,7 +88,7 @@ float** softmax_deriv_values(float** result, float* procents, int amount)
     for(int jIndex = 0; jIndex < amount; jIndex += 1)
     {
       if(iIndex == jIndex) result[iIndex][jIndex] = procents[iIndex] * (1 - procents[iIndex]);
-      
+
       else result[iIndex][jIndex] = -procents[iIndex] * procents[jIndex];
     }
   }
@@ -160,13 +160,13 @@ void layer_activ_values(float* activValues, float* layerValues, int layerWidth, 
 {
   switch(layerActive)
   {
-  case 1: sigmoid_activ_values(activValues, layerValues, layerWidth); break;
+    case 1: sigmoid_activ_values(activValues, layerValues, layerWidth); break;
 
-  case 2: relu_activ_values(activValues, layerValues, layerWidth); break;
+    case 2: relu_activ_values(activValues, layerValues, layerWidth); break;
 
-  case 3: tanh_activ_values(activValues, layerValues, layerWidth); break;
+    case 3: tanh_activ_values(activValues, layerValues, layerWidth); break;
 
-  case 4: softmax_activ_values(activValues, layerValues, layerWidth); break;
+    case 4: softmax_activ_values(activValues, layerValues, layerWidth); break;
   }
 }
 
@@ -174,12 +174,12 @@ void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, 
 {
   switch(layerActive)
   {
-  case 1: apply_sigmoid_derivs(layerDerivs, layerValues, layerWidth); break;
+    case 1: apply_sigmoid_derivs(layerDerivs, layerValues, layerWidth); break;
 
-  case 2: apply_relu_derivs(layerDerivs, layerValues, layerWidth); break;
+    case 2: apply_relu_derivs(layerDerivs, layerValues, layerWidth); break;
 
-  case 3: apply_tanh_derivs(layerDerivs, layerValues, layerWidth); break;
+    case 3: apply_tanh_derivs(layerDerivs, layerValues, layerWidth); break;
 
-  case 4: apply_softmax_derivs(layerDerivs, layerValues, layerWidth); break;
+    case 4: apply_softmax_derivs(layerDerivs, layerValues, layerWidth); break;
   }
 }
