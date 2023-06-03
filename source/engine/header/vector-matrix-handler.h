@@ -1,6 +1,8 @@
 #ifndef VECTOR_MATRIX_HANDLER_H
 #define VECTOR_MATRIX_HANDLER_H
 
+bool float_vector_minmax(float* minValue, float* maxValue, float* vector, int length);
+
 float create_random_float(float minimum, float maximum);
 
 float* create_float_vector(int length);

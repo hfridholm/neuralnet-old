@@ -1,6 +1,6 @@
-number1, symbol1, number2, word1, number3
-0.00, B, 0.00, gron, 1.00
-1.00,   C,   0.00, skola, 0.00
-0.00, A, 1.00, tjo, 0.00
-1.00, B, 1.00, hej, 1.00
-0.50, C, 0.25, groda, 0.80
+number1, symbol1, symbol2
+1, g, Team 1
+2, grupp B, Team 1
+3, g, Team 4
+4, a, Team 3
+5, grupp B, Team 4

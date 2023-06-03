@@ -1,5 +1,20 @@
 #include "../header/engine-include-header.h"
 
+bool float_vector_minmax(float* minValue, float* maxValue, float* vector, int length)
+{
+  if(length <= 0) return false;
+
+  *minValue = vector[0]; *maxValue = vector[0];
+
+  for(int index = 1; index < length; index += 1)
+  {
+    if(vector[index] > *maxValue) *maxValue = vector[index];
+
+    if(vector[index] < *minValue) *minValue = vector[index];
+  }
+  return true;
+}
+
 float create_random_float(float minimum, float maximum)
 {
   float fraction = ((float) rand() / (float) RAND_MAX);
