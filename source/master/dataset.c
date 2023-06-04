@@ -13,24 +13,17 @@ int main(int argc, char* argv[])
     printf("Error text_file_tokens\n");
   }
 
-  for(int hIndex = 0; hIndex < tHeight; hIndex += 1)
-  {
-    for(int wIndex = 0; wIndex < tWidth; wIndex += 1)
-    {
-      if(wIndex == tWidth - 1) printf("%s\n", tokens[hIndex][wIndex]);
-      else printf("%s | ", tokens[hIndex][wIndex]);
-    }
-  }
-
   char* binaryHeaders[] = {"symbol1", "symbol2"};
   int binaryAmount = 2;
 
+
+  printf("height: %d width: %d length: %d\n", tHeight, tWidth, tLength);
   
-  char*** strmat = create_string_matrix(tHeight, 20, 10);
+  char*** strmat = create_string_matrix(tHeight, 20, tLength);
 
   int newWidth = 0;
 
-  onehot_strmat_headers(strmat, &newWidth, tokens, tHeight, tWidth, 10, binaryHeaders, binaryAmount);
+  onehot_strmat_headers(strmat, &newWidth, tokens, tHeight, tWidth, tLength, binaryHeaders, binaryAmount);
 
   for(int hIndex = 0; hIndex < tHeight; hIndex += 1)
   {
@@ -41,7 +34,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  free_string_matrix(strmat, tHeight, 20, 10);
+  free_string_matrix(strmat, tHeight, 20, tLength);
 
   free_string_matrix(tokens, 100, 10, 10);
 
