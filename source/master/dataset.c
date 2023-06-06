@@ -13,23 +13,22 @@ int main(int argc, char* argv[])
     printf("Error text_file_tokens\n");
   }
 
-  char* binaryHeaders[] = {"symbol1", "symbol2"};
-  int binaryAmount = 2;
+  char* onehotHeaders[] = {"symbol1", "symbol2"};
+  int onehotAmount = 2;
 
+  char* nrmlizHeaders[] = {"number1"};
+  int nrmlizAmount = 1;
 
-  printf("height: %d width: %d length: %d\n", tHeight, tWidth, tLength);
   
   char*** strmat = create_string_matrix(tHeight, 20, tLength);
 
-  int newWidth = 0;
-
-  onehot_strmat_headers(strmat, &newWidth, tokens, tHeight, tWidth, tLength, binaryHeaders, binaryAmount);
-
+  prepare_strmat_data(strmat, &tWidth, tokens, tHeight, tWidth, tLength, onehotHeaders, onehotAmount, nrmlizHeaders, nrmlizAmount);
+ 
   for(int hIndex = 0; hIndex < tHeight; hIndex += 1)
   {
-    for(int wIndex = 0; wIndex < newWidth; wIndex += 1)
+    for(int wIndex = 0; wIndex < tWidth; wIndex += 1)
     {
-      if(wIndex == newWidth - 1) printf("%s\n", strmat[hIndex][wIndex]);
+      if(wIndex == tWidth - 1) printf("%s\n", strmat[hIndex][wIndex]);
       else printf("%s, ", strmat[hIndex][wIndex]);
     }
   }

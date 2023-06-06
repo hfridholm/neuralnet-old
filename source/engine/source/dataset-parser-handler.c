@@ -1,5 +1,29 @@
 #include "../header/engine-include-header.h"
 
+bool count_file_lines(int* amount, const char filePath[])
+{
+  FILE* filePointer = fopen(filePath, "r");
+
+  if(filePointer == NULL) return false;
+  
+  char buffer[256]; int index = 0;
+
+  for(index = 0; !feof(filePointer); index += 1)
+  {
+    if(fgets(buffer, sizeof(buffer), filePointer) == NULL) break;
+  }
+  fclose(filePointer);
+
+  *amount = index; return true;
+}
+
+bool prepare_strmat_data(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* onehotHeaders[], int onehotAmount, char* nrmlizHeaders[], int nrmlizAmount)
+{
+  if(!onehot_strmat_headers(result, newWidth, strmat, height, width, length, onehotHeaders, onehotAmount)) return false;
+
+  return nrmliz_strmat_headers(result, result, height, *newWidth, length, nrmlizHeaders, nrmlizAmount);
+}
+
 char* copy_char_string(char* destin, char* string, int length)
 {
   for(int index = 0; index < length; index += 1)
@@ -12,14 +36,12 @@ char* copy_char_string(char* destin, char* string, int length)
 bool alloc_strmat_column(char*** result, char*** strmat, int height, int width, int length1, char** strarr, int length2, int column)
 {
   if(column < 0 || column >= width) return false;
- 
+
+  copy_string_matrix(result, strmat, height, width, length1);
+
   for(int index = 0; index < height; index += 1)
   {
-    if(index == column)
-    {
-      copy_char_string(result[index][column], strarr[index], length2);
-    }
-    else copy_char_string(result[index][column], strmat[index][column], length1);
+    copy_char_string(result[index][column], strarr[index], length2);
   }
   return true;
 }
@@ -72,7 +94,7 @@ bool nrmliz_strmat_header(char*** result, char*** strmat, int height, int width,
   free_float_vector(vector, height - 1);
 
 
-  alloc_strmat_column(result, strmat, height, width, length, strarr, length, height);
+  alloc_strmat_column(result, strmat, height, width, length, strarr, length, headerIndex);
 
   
   free_string_array(strarr, height, length);
@@ -235,7 +257,7 @@ bool strmat_index_filter(char*** result, char*** strmat, int height, int width, 
     {
       int wIndex = indexis[index];
 
-      if(wIndex >= width) return false;
+      if(wIndex < 0 || wIndex >= width) return false;
 
       copy_char_string(result[hIndex][index], strmat[hIndex][wIndex], length);
     }
@@ -516,8 +538,15 @@ bool csv_headers_inptrgs_t(float** inputs, float** targets, int* height, char* i
   int* inputIndexis = malloc(sizeof(int) * inputAmount);
   int* targetIndexis = malloc(sizeof(int) * targetAmount);
 
-  strarr_strarr_indexis(inputIndexis, tokens[0], tWidth, inputHeaders, inputAmount);
-  strarr_strarr_indexis(targetIndexis, tokens[0], tWidth, targetHeaders, targetAmount);
+  if(!strarr_strarr_indexis(inputIndexis, tokens[0], tWidth, inputHeaders, inputAmount))
+  {
+    free(inputIndexis); free(targetIndexis); return false;
+  }
+
+  if(!strarr_strarr_indexis(targetIndexis, tokens[0], tWidth, targetHeaders, targetAmount))
+  {
+    free(inputIndexis); free(targetIndexis); return false;
+  }
 
   bool result = tokens_inpts_trgts(inputs, targets, tokens + 1, tHeight - 1, tWidth, tLength, inputIndexis, inputAmount, targetIndexis, targetAmount);
 
@@ -531,13 +560,16 @@ bool strarr_strarr_indexis(int* indexis, char* strarr1[], int amount1, char* str
 {
   for(int index2 = 0; index2 < amount2; index2 += 1)
   {
+    bool exists = false;
+
     for(int index1 = 0; index1 < amount1; index1 += 1)
     {
       if(!strcmp(strarr1[index1], strarr2[index2]))
       {
-        indexis[index2] = index1;
+        indexis[index2] = index1; exists = true;
       }
     }
+    if(!exists) return false;
   }
   return true;
 }

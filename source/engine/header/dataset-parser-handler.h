@@ -1,6 +1,10 @@
 #ifndef DATASET_PARSER_HANDLER_H
 #define DATASET_PARSER_HANDLER_H
 
+bool count_file_lines(int* amount, const char filePath[]);
+
+bool prepare_strmat_data(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* onehotHeaders[], int onehotAmount, char* nrmlizHeaders[], int nrmlizAmount);
+
 bool alloc_strmat_column(char*** result, char*** strmat, int height, int width, int length1, char** strarr, int length2, int column);
 
 bool float_vector_strarr(char** result, float* vector, int length);

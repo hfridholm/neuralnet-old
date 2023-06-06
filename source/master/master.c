@@ -13,11 +13,15 @@ int main(int argc, char* argv[])
   int inputNodes = 2;
   int outputNodes = 1;
 
-  char* inputHeaders[] = {"number3", "number2"};
-  char* targetHeaders[] = {"number3"};
+  // Fix input system for input and output nodes
+  char* inputHeaders[] = {"number1", "grupp BIG"};
+  char* targetHeaders[] = {"Team 4"};
 
-  float** inputs = create_float_matrix(10, inputNodes);
-  float** targets = create_float_matrix(10, outputNodes);
+  int lines = 0;
+  if(!count_file_lines(&lines, filePath)) return 1;
+
+  float** inputs = create_float_matrix(lines, inputNodes);
+  float** targets = create_float_matrix(lines, outputNodes);
 
 
   int batchSize = 0;
@@ -125,8 +129,8 @@ int main(int argc, char* argv[])
   free_float_matrix(biases, layerAmount - 1, maxShape);*/
 
 
-  free_float_matrix(inputs, 10, inputNodes);
-  free_float_matrix(targets, 10, outputNodes);
+  free_float_matrix(inputs, lines, inputNodes);
+  free_float_matrix(targets, lines, outputNodes);
 
   return 0;
 }
