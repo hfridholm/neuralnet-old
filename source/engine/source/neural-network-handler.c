@@ -21,7 +21,7 @@ void addit_oldwei_deltas(float*** weightDeltas, int layerAmount, const int layer
 
   addit_elem_fmatarr(weightDeltas, weightDeltas, tempWeightDeltas, layerAmount - 1, maxShape, maxShape);
 
-  free_fmatrix_array(tempWeightDeltas, layerAmount - 1, maxShape, maxShape);
+  free_fmatrix_array(&tempWeightDeltas, layerAmount - 1, maxShape, maxShape);
 }
 
 void addit_oldbia_deltas(float** biasDeltas, int layerAmount, const int layerSizes[], float momentum, float** oldBiasDeltas)
@@ -34,7 +34,7 @@ void addit_oldbia_deltas(float** biasDeltas, int layerAmount, const int layerSiz
 
   addit_elem_fmatrix(biasDeltas, biasDeltas, tempBiasDeltas, layerAmount - 1, maxShape);
 
-  free_float_matrix(tempBiasDeltas, layerAmount - 1, maxShape);
+  free_float_matrix(&tempBiasDeltas, layerAmount - 1, maxShape);
 }
 
 bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], float learnRate, float momentum, float*** weightDerivs, float** biasDerivs, float*** oldWeightDeltas, float** oldBiasDeltas)
@@ -75,7 +75,7 @@ bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSize
 
     dotprod_fmatrix_vector(nodeDerivs[layerIndex - 2], weightTransp, layerWidth, layerHeight, nodeDerivs[layerIndex - 1], layerHeight);
 
-    free_float_matrix(weightTransp, layerWidth, layerHeight);
+    free_float_matrix(&weightTransp, layerWidth, layerHeight);
 
     apply_activ_derivs(nodeDerivs[layerIndex - 2], nodeValues[layerIndex - 1], layerWidth, layerActivs[layerIndex - 2]);
   }
@@ -100,7 +100,7 @@ bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, int layerAm
     copy_float_vector(biasDerivs[layerIndex - 1], nodeDerivs[layerIndex - 1], layerHeight);
   }
 
-  free_float_matrix(nodeDerivs, layerAmount - 1, maxShape);
+  free_float_matrix(&nodeDerivs, layerAmount - 1, maxShape);
 
   return true;
 }

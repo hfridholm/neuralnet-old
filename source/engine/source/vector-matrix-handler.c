@@ -47,7 +47,11 @@ int* create_integ_array(int length)
   return array;
 }
 
-void free_integ_array(int* array, int length) {free(array);}
+void free_integ_array(int** array, int length)
+{
+  free(*array);
+  *array = NULL;
+}
 
 int* random_indexis_array(int* array, int length)
 {
@@ -100,24 +104,34 @@ float*** create_fmatrix_array(int amount, int height, int width)
   return matarr;
 }
 
-void free_float_vector(float* vector, int length) {free(vector);}
-
-void free_float_matrix(float** matrix, int height, int width)
+void free_float_vector(float** vector, int length)
 {
-  for(int index = 0; index < height; index += 1)
-  {
-    free_float_vector(matrix[index], width);
-  }
-  free(matrix);
+  free(*vector);
+  *vector = NULL;
 }
 
-void free_fmatrix_array(float*** matarr, int amount, int height, int width)
+void free_float_matrix(float*** matrix, int height, int width)
 {
+  if(*matrix == NULL) return;
+
+  for(int index = 0; index < height; index += 1)
+  {
+    free_float_vector((*matrix) + index, width);
+  }
+  free(*matrix);
+  *matrix = NULL;
+}
+
+void free_fmatrix_array(float**** matarr, int amount, int height, int width)
+{
+  if(*matarr == NULL) return;
+
   for(int index = 0; index < amount; index += 1)
   {
-    free_float_matrix(matarr[index], height, width);
+    free_float_matrix((*matarr) + index, height, width);
   }
-  free(matarr);
+  free(*matarr);
+  *matarr = NULL;
 }
 
 float*** fill_fmatarr_random(float*** matarr, int amount, int height, int width, float minimum, float maximum)

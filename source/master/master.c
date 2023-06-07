@@ -130,8 +130,8 @@ int main(int argc, char* argv[])
   free_float_matrix(biases, layerAmount - 1, maxShape);*/
 
 
-  free_float_matrix(inputs, lines, inputNodes);
-  free_float_matrix(targets, lines, outputNodes);
+  free_float_matrix(&inputs, lines, inputNodes);
+  free_float_matrix(&targets, lines, outputNodes);
 
   return 0;
 }

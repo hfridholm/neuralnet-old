@@ -7,9 +7,9 @@ extern char*** create_string_matrix(int height, int width, int length);
 
 
 
-extern void free_string_array(char** strarr, int amount, int length);
+extern void free_string_array(char*** strarr, int amount, int length);
 
-extern void free_string_matrix(char*** strmat, int height, int width, int length);
+extern void free_string_matrix(char**** strmat, int height, int width, int length);
 
 
 

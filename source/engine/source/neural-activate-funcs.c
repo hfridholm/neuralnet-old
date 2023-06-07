@@ -103,7 +103,7 @@ float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWid
 
   dotprod_fmatrix_vector(layerDerivs, activDerivs, layerWidth, layerWidth, layerValues, layerWidth);
 
-  free_float_matrix(activDerivs, layerWidth, layerWidth);
+  free_float_matrix(&activDerivs, layerWidth, layerWidth);
 
   return layerDerivs;
 }
@@ -119,7 +119,7 @@ float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWid
 
   multi_elem_fvector(layerDerivs, layerDerivs, activDerivs, layerWidth);
 
-  free_float_vector(activDerivs, layerWidth);
+  free_float_vector(&activDerivs, layerWidth);
 
   return layerDerivs;
 }
@@ -135,7 +135,7 @@ float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 
   multi_elem_fvector(layerDerivs, layerDerivs, activDerivs, layerWidth);
 
-  free_float_vector(activDerivs, layerWidth);
+  free_float_vector(&activDerivs, layerWidth);
 
   return layerDerivs;
 }
@@ -151,7 +151,7 @@ float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 
   multi_elem_fvector(layerDerivs, layerDerivs, activDerivs, layerWidth);
 
-  free_float_vector(activDerivs, layerWidth);
+  free_float_vector(&activDerivs, layerWidth);
 
   return layerDerivs;
 }

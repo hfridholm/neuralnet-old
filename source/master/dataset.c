@@ -34,9 +34,9 @@ int main(int argc, char* argv[])
     }
   }
 
-  free_string_matrix(strmat, tHeight, 20, tLength);
+  free_string_matrix(&strmat, tHeight, 20, tLength);
 
-  free_string_matrix(tokens, 100, 10, 10);
+  free_string_matrix(&tokens, 100, 10, 10);
 
   return 0;
 }

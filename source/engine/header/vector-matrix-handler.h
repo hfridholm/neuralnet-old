@@ -11,11 +11,11 @@ extern float** create_float_matrix(int height, int width);
 
 extern float*** create_fmatrix_array(int amount, int height, int width);
 
-extern void free_float_vector(float* vector, int length);
+extern void free_float_vector(float** vector, int length);
 
-extern void free_float_matrix(float** matrix, int height, int width);
+extern void free_float_matrix(float*** matrix, int height, int width);
 
-extern void free_fmatrix_array(float*** matrixArray, int amount, int height, int width);
+extern void free_fmatrix_array(float**** matrixArray, int amount, int height, int width);
 
 extern float*** fill_fmatarr_random(float*** matrixArray, int amount, int height, int width, float minimum, float maximum);
 
@@ -81,7 +81,7 @@ extern void print_float_vector(float* vector, int length);
 
 extern int* create_integ_array(int length);
 
-extern void free_integ_array(int* array, int length);
+extern void free_integ_array(int** array, int length);
 
 extern int* random_indexis_array(int* array, int length);
 

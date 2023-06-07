@@ -23,8 +23,8 @@ void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
 
   create_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, learnRate, momentum, weightDerivs, biasDerivs, oldWeightDeltas, oldBiasDeltas);
 
-  free_fmatrix_array(weightDerivs, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(biasDerivs, layerAmount - 1, maxShape);
+  free_fmatrix_array(&weightDerivs, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(&biasDerivs, layerAmount - 1, maxShape);
 }
 
 void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float* inputs, float* targets)
@@ -37,7 +37,7 @@ void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, int layerAmo
 
   create_weibia_derivs(weightDerivs, biasDerivs, layerAmount, layerSizes, layerActivs, weights, biases, nodeValues, targets);
 
-  free_float_matrix(nodeValues, layerAmount, maxShape);
+  free_float_matrix(&nodeValues, layerAmount, maxShape);
 }
 
 void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float** inputs, float** targets, int batchSize)
@@ -55,8 +55,8 @@ void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, int l
     addit_elem_fmatrix(meanBiasDerivs, meanBiasDerivs, biasDerivs, layerAmount - 1, maxShape);
   }
 
-  free_fmatrix_array(weightDerivs, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(biasDerivs, layerAmount - 1, maxShape);
+  free_fmatrix_array(&weightDerivs, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(&biasDerivs, layerAmount - 1, maxShape);
 
   multi_scale_fmatarr(meanWeightDerivs, meanWeightDerivs, layerAmount - 1, maxShape, maxShape, 1.0f / batchSize);
   multi_scale_fmatrix(meanBiasDerivs, meanBiasDerivs, layerAmount - 1, maxShape, 1.0f / batchSize);
@@ -73,8 +73,8 @@ void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
 
   create_weibia_deltas(weightDeltas, biasDeltas, layerAmount, layerSizes, learnRate, momentum, meanWeightDerivs, meanBiasDerivs, oldWeightDeltas, oldBiasDeltas);
 
-  free_fmatrix_array(meanWeightDerivs, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(meanBiasDerivs, layerAmount - 1, maxShape);
+  free_fmatrix_array(&meanWeightDerivs, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(&meanBiasDerivs, layerAmount - 1, maxShape);
 }
 
 bool train_network_minbat(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
@@ -99,7 +99,7 @@ bool frwrd_network_inputs(float* outputs, int layerAmount, const int layerSizes[
 
   copy_float_vector(outputs, nodeValues[layerAmount - 1], layerSizes[layerAmount - 1]);
 
-  free_float_matrix(nodeValues, layerAmount, maxShape);
+  free_float_matrix(&nodeValues, layerAmount, maxShape);
 
   return true;
 }
@@ -119,11 +119,11 @@ void train_epochs_stcast(int layerAmount, const int layerSizes[], const int laye
     train_epoch_stcast(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize, oldWeightDeltas, oldBiasDeltas);
   }
 
-  free_fmatrix_array(oldWeightDeltas, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(oldBiasDeltas, layerAmount - 1, maxShape);
+  free_fmatrix_array(&oldWeightDeltas, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(&oldBiasDeltas, layerAmount - 1, maxShape);
 
-  free_fmatrix_array(weightDeltas, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(biasDeltas, layerAmount - 1, maxShape);
+  free_fmatrix_array(&weightDeltas, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(&biasDeltas, layerAmount - 1, maxShape);
 }
 
 void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
@@ -144,7 +144,7 @@ void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, int layerAmou
     copy_float_matrix(oldBiasDeltas, biasDeltas, layerAmount - 1, maxShape);
   }
 
-  free_integ_array(randIndexis, batchSize);
+  free_integ_array(&randIndexis, batchSize);
 }
 
 /* This is just some function that I thought might would be implemented in the future

@@ -26,22 +26,29 @@ char*** create_string_matrix(int height, int width, int length)
 
 
 
-void free_string_array(char** strarr, int amount, int length)
+void free_string_array(char*** strarr, int amount, int length)
 {
+  if(*strarr == NULL) return;
+
   for(int index = 0; index < amount; index += 1) 
   {
-    free(strarr[index]);
+    free((*strarr)[index]);
+    (*strarr)[index] = NULL;
   }
-  free(strarr);
+  free(*strarr);
+  *strarr = NULL;
 }
 
-void free_string_matrix(char*** strmat, int height, int width, int length)
+void free_string_matrix(char**** strmat, int height, int width, int length)
 {
+  if(*strmat == NULL) return;
+
   for(int index = 0; index < height; index += 1)
   {
-    free_string_array(strmat[index], width, length);
+    free_string_array((*strmat) + index, width, length);
   }
-  free(strmat);
+  free(*strmat);
+  *strmat = NULL;
 }
 
 

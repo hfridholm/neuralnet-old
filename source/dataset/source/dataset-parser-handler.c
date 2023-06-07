@@ -34,13 +34,13 @@ bool nrmliz_strmat_header(char*** result, char*** strmat, int height, int width,
   float_vector_strarr(strarr + 1, vector, height - 1);
 
   
-  free_float_vector(vector, height - 1);
+  free_float_vector(&vector, height - 1);
 
 
   alloc_strmat_column(result, strmat, height, width, length, strarr, length, headerIndex);
 
   
-  free_string_array(strarr, height, length);
+  free_string_array(&strarr, height, length);
 
   return true;
 }
@@ -95,16 +95,16 @@ bool onehot_strmat_header(char*** result, int* newWidth, char*** strmat, int hei
 
   merge_strmat_columns(result, tempStrmat, height, width - 1, length, addStrmat, singleAmount, length);
 
-  free_string_matrix(tempStrmat, height, width, length);
+  free_string_matrix(&tempStrmat, height, width, length);
 
 
-  free_string_matrix(addStrmat, height, singleAmount, length);
+  free_string_matrix(&addStrmat, height, singleAmount, length);
 
-  free_string_matrix(newStrmat, height - 1, singleAmount, length);
+  free_string_matrix(&newStrmat, height - 1, singleAmount, length);
 
-  free_string_array(singleStrarr, height - 1, length);
+  free_string_array(&singleStrarr, height - 1, length);
 
-  free_string_array(columnStrarr, height, length);
+  free_string_array(&columnStrarr, height, length);
 
   return true;
 }
@@ -153,8 +153,8 @@ bool tokens_inpts_trgts(float** inputs, float** targets, char*** tokens, int hei
   strmat_float_matrix(inputs, inputTokens, height, inputAmount);
   strmat_float_matrix(targets, targetTokens, height, targetAmount);
 
-  free_string_matrix(inputTokens, height, width, length);
-  free_string_matrix(targetTokens, height, width, length);
+  free_string_matrix(&inputTokens, height, width, length);
+  free_string_matrix(&targetTokens, height, width, length);
 
   return true;
 }
@@ -174,7 +174,7 @@ bool text_file_tokens(char*** tokens, int* height, int* width, int* length, cons
 
   bool result = text_file_tokens_t(tokens, height, width, length, filePath, delim, strArray);
 
-  free_string_array(strArray, 256, 256); return result;
+  free_string_array(&strArray, 256, 256); return result;
 }
 
 static bool csv_indexes_inptrgs_t(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[], char*** tokens)
@@ -203,7 +203,7 @@ bool csv_indexes_inptrgs(float** inputs, float** targets, int* height, const int
 
   bool result = csv_indexes_inptrgs_t(inputs, targets, height, inputIndexis, inputAmount, targetIndexis, targetAmount, filePath, tokens);
 
-  free_string_matrix(tokens, 100, 10, 10); return result;
+  free_string_matrix(&tokens, 100, 10, 10); return result;
 }
 
 static bool csv_headers_inptrgs_t(float** inputs, float** targets, int* height, char* inputHeaders[], int inputAmount, char* targetHeaders[], int targetAmount, const char filePath[], char*** tokens)
@@ -228,18 +228,22 @@ static bool csv_headers_inptrgs_t(float** inputs, float** targets, int* height, 
 
   if(!strarr_strarr_indexes(inputIndexis, tokens[0], tWidth, inputHeaders, inputAmount))
   {
-    free(inputIndexis); free(targetIndexis); return false;
+    free_integ_array(&inputIndexis, inputAmount);
+    free_integ_array(&targetIndexis, targetAmount);
+    return false;
   }
 
   if(!strarr_strarr_indexes(targetIndexis, tokens[0], tWidth, targetHeaders, targetAmount))
   {
-    free(inputIndexis); free(targetIndexis); return false;
+    free_integ_array(&inputIndexis, inputAmount);
+    free_integ_array(&targetIndexis, targetAmount);
+    return false;
   }
 
   bool result = tokens_inpts_trgts(inputs, targets, tokens + 1, tHeight - 1, tWidth, tLength, inputIndexis, inputAmount, targetIndexis, targetAmount);
 
-  free(inputIndexis);
-  free(targetIndexis);
+  free_integ_array(&inputIndexis, inputAmount);
+  free_integ_array(&targetIndexis, targetAmount);
 
   return result;
 }
@@ -250,5 +254,5 @@ bool csv_headers_inptrgs(float** inputs, float** targets, int* height, char* inp
 
   bool result = csv_headers_inptrgs_t(inputs, targets, height, inputHeaders, inputAmount, targetHeaders, targetAmount, filePath, tokens);
 
-  free_string_matrix(tokens, 100, 10, 10); return result;
+  free_string_matrix(&tokens, 100, 10, 10); return result;
 }
