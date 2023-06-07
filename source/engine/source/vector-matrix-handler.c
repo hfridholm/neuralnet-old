@@ -91,13 +91,13 @@ float** create_float_matrix(int height, int width)
 
 float*** create_fmatrix_array(int amount, int height, int width)
 {
-  float*** matrixArray = malloc(sizeof(float**) * amount);
+  float*** matarr = malloc(sizeof(float**) * amount);
 
   for(int index = 0; index < amount; index += 1)
   {
-    matrixArray[index] = create_float_matrix(height, width);
+    matarr[index] = create_float_matrix(height, width);
   }
-  return matrixArray;
+  return matarr;
 }
 
 void free_float_vector(float* vector, int length) {free(vector);}
@@ -111,22 +111,22 @@ void free_float_matrix(float** matrix, int height, int width)
   free(matrix);
 }
 
-void free_fmatrix_array(float*** matrixArray, int amount, int height, int width)
+void free_fmatrix_array(float*** matarr, int amount, int height, int width)
 {
   for(int index = 0; index < amount; index += 1)
   {
-    free_float_matrix(matrixArray[index], height, width);
+    free_float_matrix(matarr[index], height, width);
   }
-  free(matrixArray);
+  free(matarr);
 }
 
-float*** fill_fmatarr_random(float*** matrixArray, int amount, int height, int width, float minimum, float maximum)
+float*** fill_fmatarr_random(float*** matarr, int amount, int height, int width, float minimum, float maximum)
 {
   for(int index = 0; index < amount; index += 1)
   {
-    fill_fmatrix_random(matrixArray[index], height, width, minimum, maximum);
+    fill_fmatrix_random(matarr[index], height, width, minimum, maximum);
   }
-  return matrixArray;
+  return matarr;
 }
 
 float** fill_fmatrix_random(float** matrix, int height, int width, float minimum, float maximum)
@@ -412,11 +412,11 @@ float float_vector_total(float* vector, int length)
   return vecTotal;
 }
 
-void print_fmatrix_array(float*** matrixArray, int amount, int height, int width)
+void print_fmatrix_array(float*** matarr, int amount, int height, int width)
 {
   for(int index = 0; index < amount; index += 1)
   {
-    print_float_matrix(matrixArray[index], height, width);
+    print_float_matrix(matarr[index], height, width);
 
     printf("\n");
   }

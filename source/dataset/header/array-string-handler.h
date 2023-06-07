@@ -7,9 +7,9 @@ extern char*** create_string_matrix(int height, int width, int length);
 
 
 
-extern void free_string_array(char** strArray, int amount, int length);
+extern void free_string_array(char** strarr, int amount, int length);
 
-extern void free_string_matrix(char*** strMatrix, int height, int width, int length);
+extern void free_string_matrix(char*** strmat, int height, int width, int length);
 
 
 
@@ -45,7 +45,7 @@ extern int trim_string_spaces(char* result, const char string[], int length);
 
 
 
-extern bool strarr_strarr_indexis(int* indexis, char* strarr1[], int amount1, char* strarr2[], int amount2);
+extern bool strarr_strarr_indexes(int* indexes, char* strarr1[], int amount1, char* strarr2[], int amount2);
 
 
 
@@ -67,11 +67,11 @@ extern int strmat_header_index(char*** strmat, int height, int width, const char
 
 extern int split_string_tokens(char** tokens, int* length, const char string[], const char delim[]);
 
-extern void string_array_tokens(char*** tokens, int* width, int* length, char** strArray, int strAmount, const char delim[]);
+extern void string_array_tokens(char*** tokens, int* width, int* length, char** strarr, int amount, const char delim[]);
 
 
 
-extern bool strmat_index_filter(char*** result, char*** strMatrix, int height, int width, int length, const int indexis[], int amount);
+extern bool strmat_index_filter(char*** result, char*** strmat, int height, int width, int length, const int indexes[], int amount);
 
 
 

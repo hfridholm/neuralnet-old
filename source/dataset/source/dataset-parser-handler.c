@@ -177,7 +177,7 @@ bool text_file_tokens(char*** tokens, int* height, int* width, int* length, cons
   free_string_array(strArray, 256, 256); return result;
 }
 
-static bool csv_indexis_inptrgs_t(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[], char*** tokens)
+static bool csv_indexes_inptrgs_t(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[], char*** tokens)
 {
   int tWidth = 0, tHeight = 0, tLength = 0;
 
@@ -197,11 +197,11 @@ static bool csv_indexis_inptrgs_t(float** inputs, float** targets, int* height, 
   return tokens_inpts_trgts(inputs, targets, tokens + 1, tHeight - 1, tWidth, tLength, inputIndexis, inputAmount, targetIndexis, targetAmount);
 }
 
-bool csv_indexis_inptrgs(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[])
+bool csv_indexes_inptrgs(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[])
 {
   char*** tokens = create_string_matrix(100, 10, 10);
 
-  bool result = csv_indexis_inptrgs_t(inputs, targets, height, inputIndexis, inputAmount, targetIndexis, targetAmount, filePath, tokens);
+  bool result = csv_indexes_inptrgs_t(inputs, targets, height, inputIndexis, inputAmount, targetIndexis, targetAmount, filePath, tokens);
 
   free_string_matrix(tokens, 100, 10, 10); return result;
 }
@@ -226,12 +226,12 @@ static bool csv_headers_inptrgs_t(float** inputs, float** targets, int* height, 
   int* inputIndexis = malloc(sizeof(int) * inputAmount);
   int* targetIndexis = malloc(sizeof(int) * targetAmount);
 
-  if(!strarr_strarr_indexis(inputIndexis, tokens[0], tWidth, inputHeaders, inputAmount))
+  if(!strarr_strarr_indexes(inputIndexis, tokens[0], tWidth, inputHeaders, inputAmount))
   {
     free(inputIndexis); free(targetIndexis); return false;
   }
 
-  if(!strarr_strarr_indexis(targetIndexis, tokens[0], tWidth, targetHeaders, targetAmount))
+  if(!strarr_strarr_indexes(targetIndexis, tokens[0], tWidth, targetHeaders, targetAmount))
   {
     free(inputIndexis); free(targetIndexis); return false;
   }

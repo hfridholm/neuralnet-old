@@ -2,46 +2,46 @@
 
 char** create_string_array(int amount, int length)
 {
-  char** strArray = malloc(sizeof(char*) * amount);
+  char** strarr = malloc(sizeof(char*) * amount);
 
   for(int index = 0; index < amount; index += 1)
   {
-    strArray[index] = malloc(sizeof(char) * length);
+    strarr[index] = malloc(sizeof(char) * length);
 
-    memset(strArray[index], '\0', sizeof(char) * length);
+    memset(strarr[index], '\0', sizeof(char) * length);
   }
-  return strArray;
+  return strarr;
 }
 
 char*** create_string_matrix(int height, int width, int length)
 {
-  char*** strMatrix = malloc(sizeof(char**) * height);
+  char*** strmat = malloc(sizeof(char**) * height);
 
   for(int index = 0; index < height; index += 1)
   {
-    strMatrix[index] = create_string_array(width, length);
+    strmat[index] = create_string_array(width, length);
   }
-  return strMatrix;
+  return strmat;
 }
 
 
 
-void free_string_array(char** strArray, int amount, int length)
+void free_string_array(char** strarr, int amount, int length)
 {
   for(int index = 0; index < amount; index += 1) 
   {
-    free(strArray[index]);
+    free(strarr[index]);
   }
-  free(strArray);
+  free(strarr);
 }
 
-void free_string_matrix(char*** strMatrix, int height, int width, int length)
+void free_string_matrix(char*** strmat, int height, int width, int length)
 {
   for(int index = 0; index < height; index += 1)
   {
-    free_string_array(strMatrix[index], width, length);
+    free_string_array(strmat[index], width, length);
   }
-  free(strMatrix);
+  free(strmat);
 }
 
 
@@ -156,7 +156,7 @@ int trim_string_spaces(char* result, const char string[], int length)
   result[newLength] = '\0'; return newLength;
 }
 
-bool strarr_strarr_indexis(int* indexis, char* strarr1[], int amount1, char* strarr2[], int amount2)
+bool strarr_strarr_indexes(int* indexes, char* strarr1[], int amount1, char* strarr2[], int amount2)
 {
   for(int index2 = 0; index2 < amount2; index2 += 1)
   {
@@ -166,7 +166,7 @@ bool strarr_strarr_indexis(int* indexis, char* strarr1[], int amount1, char* str
     {
       if(!strcmp(strarr1[index1], strarr2[index2]))
       {
-        indexis[index2] = index1; exists = true;
+        indexes[index2] = index1; exists = true;
       }
     }
     if(!exists) return false;
@@ -266,13 +266,13 @@ int split_string_tokens(char** tokens, int* length, const char string[], const c
   return amount;
 }
 
-void string_array_tokens(char*** tokens, int* width, int* length, char** strArray, int strAmount, const char delim[])
+void string_array_tokens(char*** tokens, int* width, int* length, char** strarr, int amount, const char delim[])
 {
   *width = 0; *length = 0;
 
-  for(int index = 0; index < strAmount; index += 1)
+  for(int index = 0; index < amount; index += 1)
   {
-    int tempAmount = split_string_tokens(tokens[index], length, strArray[index], delim);
+    int tempAmount = split_string_tokens(tokens[index], length, strarr[index], delim);
 
     if(tempAmount > *width) *width = tempAmount;
   }
@@ -280,13 +280,13 @@ void string_array_tokens(char*** tokens, int* width, int* length, char** strArra
 
 
 
-bool strmat_index_filter(char*** result, char*** strmat, int height, int width, int length, const int indexis[], int amount)
+bool strmat_index_filter(char*** result, char*** strmat, int height, int width, int length, const int indexes[], int amount)
 {
   for(int hIndex = 0; hIndex < height; hIndex += 1)
   {
     for(int index = 0; index < amount; index += 1)
     {
-      int wIndex = indexis[index];
+      int wIndex = indexes[index];
 
       if(wIndex < 0 || wIndex >= width) return false;
 
