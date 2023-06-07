@@ -1,4 +1,5 @@
-#include "../engine/header/engine-include-header.h"
+#include "../engine/engine.h"
+#include "../dataset/dataset.h"
 
 int main(int argc, char* argv[])
 {
@@ -8,7 +9,7 @@ int main(int argc, char* argv[])
 
   if(argc >= 2) strcpy(filePath, argv[1]);
 
-  else strcpy(filePath, "../source/datasets/test-dataset.csv");
+  else strcpy(filePath, "../source/assets/test-dataset.csv");
 
   int inputNodes = 2;
   int outputNodes = 1;

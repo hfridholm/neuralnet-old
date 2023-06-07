@@ -1,8 +1,9 @@
-#include "../engine/header/engine-include-header.h"
+#include "../engine/engine.h"
+#include "../dataset/dataset.h"
 
 int main(int argc, char* argv[])
 {
-  char filePath[] = "../source/datasets/test-dataset.csv";
+  char filePath[] = "../source/assets/test-dataset.csv";
 
   char*** tokens = create_string_matrix(100, 10, 10);
 

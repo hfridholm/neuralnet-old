@@ -1,4 +1,4 @@
-#include "../header/engine-include-header.h"
+#include "../engine.h"
 
 bool train_network_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
