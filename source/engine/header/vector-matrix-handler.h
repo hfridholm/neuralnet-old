@@ -73,11 +73,11 @@ extern float vector_maximum_float(float* vector, int length);
 
 extern float float_vector_total(float* vector, int length);
 
-extern void print_fmatrix_array(float*** matarr, int amount, int height, int width);
+extern bool print_fmatrix_array(float*** matarr, int amount, int height, int width);
 
-extern void print_float_matrix(float** matrix, int height, int width);
+extern bool print_float_matrix(float** matrix, int height, int width);
 
-extern void print_float_vector(float* vector, int length);
+extern bool print_float_vector(float* vector, int length);
 
 extern int* create_integ_array(int length);
 
@@ -86,7 +86,5 @@ extern void free_integ_array(int** array, int length);
 extern int* random_indexes_array(int* array, int length);
 
 extern int* shuffle_integ_array(int* array, int length);
-
-extern int* switch_array_ints(int* array, int index1, int index2);
 
 #endif

@@ -4,6 +4,8 @@ const size_t LINE_BUFFER_SIZE = 256;
 
 bool count_file_lines(int* amount, const char filePath[])
 {
+  if(amount == NULL || filePath == NULL) return false;
+
   FILE* filePointer = fopen(filePath, "r");
 
   if(filePointer == NULL) return false;
@@ -38,11 +40,14 @@ static bool extract_file_lines(char** fileLines, int* amount, FILE* filePointer)
 
 bool extract_text_file(char** fileLines, int* amount, const char filePath[])
 {
+  if(fileLines == NULL || amount == NULL || filePath == NULL) return false;
+
   FILE* filePointer = fopen(filePath, "r");
 
   if(filePointer == NULL) return false;
 
   bool result = extract_file_lines(fileLines, amount, filePointer);
 
-  fclose(filePointer); return result;
+  fclose(filePointer);
+  return result;
 }

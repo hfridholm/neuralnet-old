@@ -1,11 +1,15 @@
 #ifndef ARRAY_STRING_HANDLER_H
 #define ARRAY_STRING_HANDLER_H
 
+extern char* create_char_string(int length);
+
 extern char** create_string_array(int amount, int length);
 
 extern char*** create_string_matrix(int height, int width, int length);
 
 
+
+extern void free_char_string(char** string, int length);
 
 extern void free_string_array(char*** strarr, int amount, int length);
 

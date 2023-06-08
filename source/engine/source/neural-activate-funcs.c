@@ -32,6 +32,8 @@ float tanh_deriv_value(float tanhValue)
 
 float* cross_entropy_deriv(float* result, float* nodes, float* targets, int amount)
 {
+  if(result == NULL || nodes == NULL || targets == NULL) return NULL;
+ 
   for(int index = 0; index < amount; index += 1)
   {
     result[index] = 2 * (nodes[index] - targets[index]);
@@ -39,23 +41,27 @@ float* cross_entropy_deriv(float* result, float* nodes, float* targets, int amou
   return result;
 }
 
-float* softmax_activ_values(float* result, float* nodes, int amount)
+float* softmax_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
+  if(activValues == NULL || layerValues == NULL) return NULL;
+
   float sum = 0.0f;
 
-  for(int index = 0; index < amount; index += 1)
+  for(int index = 0; index < layerWidth; index += 1)
   {
-    sum += exp(nodes[index]);
+    sum += exp(layerValues[index]);
   }
-  for(int index = 0; index < amount; index += 1)
+  for(int index = 0; index < layerWidth; index += 1)
   {
-    result[index] = exp(nodes[index]) / sum;
+    activValues[index] = exp(layerValues[index]) / sum;
   }
-  return result;
+  return activValues;
 }
 
 float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
+  if(activValues == NULL || layerValues == NULL) return NULL;
+
   for(int index = 0; index < layerWidth; index += 1)
   {
     activValues[index] = sigmoid_activ_value(layerValues[index]);
@@ -65,6 +71,8 @@ float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWid
 
 float* relu_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
+  if(activValues == NULL || layerValues == NULL) return NULL;
+
   for(int index = 0; index < layerWidth; index += 1)
   {
     activValues[index] = relu_activ_value(layerValues[index]);
@@ -74,6 +82,8 @@ float* relu_activ_values(float* activValues, float* layerValues, int layerWidth)
 
 float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
+  if(activValues == NULL || layerValues == NULL) return NULL;
+
   for(int index = 0; index < layerWidth; index += 1)
   {
     activValues[index] = tanh_activ_value(layerValues[index]);
@@ -81,22 +91,26 @@ float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth)
   return activValues;
 }
 
-float** softmax_deriv_values(float** result, float* procents, int amount)
+float** softmax_deriv_values(float** layerDerivs, float* layerValues, int layerWidth)
 {
-  for(int iIndex = 0; iIndex < amount; iIndex += 1)
-  {
-    for(int jIndex = 0; jIndex < amount; jIndex += 1)
-    {
-      if(iIndex == jIndex) result[iIndex][jIndex] = procents[iIndex] * (1 - procents[iIndex]);
+  if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
-      else result[iIndex][jIndex] = -procents[iIndex] * procents[jIndex];
+  for(int iIndex = 0; iIndex < layerWidth; iIndex += 1)
+  {
+    for(int jIndex = 0; jIndex < layerWidth; jIndex += 1)
+    {
+      if(iIndex == jIndex) layerDerivs[iIndex][jIndex] = layerValues[iIndex] * (1 - layerValues[iIndex]);
+
+      else layerDerivs[iIndex][jIndex] = -layerValues[iIndex] * layerValues[jIndex];
     }
   }
-  return result;
+  return layerDerivs;
 }
 
 float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
+  if(layerDerivs == NULL || layerValues == NULL) return NULL;
+ 
   float** activDerivs = create_float_matrix(layerWidth, layerWidth);
 
   softmax_deriv_values(activDerivs, layerValues, layerWidth);
@@ -110,6 +124,8 @@ float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWid
 
 float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
+  if(layerDerivs == NULL || layerValues == NULL) return NULL;
+
   float* activDerivs = create_float_vector(layerWidth);
 
   for(int index = 0; index < layerWidth; index += 1)
@@ -126,6 +142,8 @@ float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWid
 
 float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
+  if(layerDerivs == NULL || layerValues == NULL) return NULL;
+
   float* activDerivs = create_float_vector(layerWidth);
 
   for(int index = 0; index < layerWidth; index += 1)
@@ -142,6 +160,8 @@ float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 
 float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
+  if(layerDerivs == NULL || layerValues == NULL) return NULL;
+
   float* activDerivs = create_float_vector(layerWidth);
 
   for(int index = 0; index < layerWidth; index += 1)

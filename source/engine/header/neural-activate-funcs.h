@@ -15,7 +15,7 @@ extern float tanh_deriv_value(float tanhValue);
 
 extern float* cross_entropy_deriv(float* result, float* nodes, float* targets, int amount);
 
-extern float* softmax_activ_values(float* result, float* nodes, int amount);
+extern float* softmax_activ_values(float* activValues, float* layerValues, int layerWidth);
 
 extern float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWidth);
 
@@ -23,7 +23,7 @@ extern float* relu_activ_values(float* activValues, float* layerValues, int laye
 
 extern float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth);
 
-extern float** softmax_deriv_values(float** result, float* procents, int amount);
+extern float** softmax_deriv_values(float** layerDerivs, float* layerValues, int layerWidth);
 
 extern float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWidth);
 
