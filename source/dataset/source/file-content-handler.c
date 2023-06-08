@@ -1,12 +1,15 @@
 #include "../dataset.h"
 
+const size_t LINE_BUFFER_SIZE = 256;
+
 bool count_file_lines(int* amount, const char filePath[])
 {
   FILE* filePointer = fopen(filePath, "r");
 
   if(filePointer == NULL) return false;
   
-  char buffer[256]; int index = 0;
+  char buffer[LINE_BUFFER_SIZE];
+  int index = 0;
 
   for(index = 0; !feof(filePointer); index += 1)
   {
@@ -14,12 +17,14 @@ bool count_file_lines(int* amount, const char filePath[])
   }
   fclose(filePointer);
 
-  *amount = index; return true;
+  *amount = index;
+  return true;
 }
 
 static bool extract_file_lines(char** fileLines, int* amount, FILE* filePointer)
 {
-  char buffer[256]; int index = 0;
+  char buffer[LINE_BUFFER_SIZE];
+  int index = 0;
 
   for(index = 0; !feof(filePointer); index += 1)
   {
@@ -27,7 +32,8 @@ static bool extract_file_lines(char** fileLines, int* amount, FILE* filePointer)
 
     sscanf(buffer, "%[^\n]%*c", fileLines[index]);
   }
-  *amount = index; return true;
+  *amount = index;
+  return true;
 }
 
 bool extract_text_file(char** fileLines, int* amount, const char filePath[])

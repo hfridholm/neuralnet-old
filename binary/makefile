@@ -5,7 +5,7 @@ CLEAN_TARGET := clean
 
 RUNBLE_FILES = master dataset debug
 
-COMPILE_FLAGS := -Wall -Werror -g -Og -std=c99
+COMPILE_FLAGS := -Wall -Werror -g -Og -std=c99 -O3
 COMPILE_PRGRM := gcc
 COMPILE_LINKS := -lm
 

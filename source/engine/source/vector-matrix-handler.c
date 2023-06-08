@@ -53,7 +53,7 @@ void free_integ_array(int** array, int length)
   *array = NULL;
 }
 
-int* random_indexis_array(int* array, int length)
+int* random_indexes_array(int* array, int length)
 {
   for(int index = 0; index < length; index += 1)
   {

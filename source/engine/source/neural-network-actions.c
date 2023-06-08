@@ -130,13 +130,13 @@ void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, int layerAmou
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
-  int* randIndexis = create_integ_array(batchSize);
+  int* randIndexes = create_integ_array(batchSize);
 
-  random_indexis_array(randIndexis, batchSize);
+  random_indexes_array(randIndexes, batchSize);
 
   for(int index = 0; index < batchSize; index += 1)
   {
-    int randIndex = randIndexis[index];
+    int randIndex = randIndexes[index];
 
     train_network_stcast(weightDeltas, biasDeltas, layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs[randIndex], targets[randIndex], oldWeightDeltas, oldBiasDeltas);
 
@@ -144,7 +144,7 @@ void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, int layerAmou
     copy_float_matrix(oldBiasDeltas, biasDeltas, layerAmount - 1, maxShape);
   }
 
-  free_integ_array(&randIndexis, batchSize);
+  free_integ_array(&randIndexes, batchSize);
 }
 
 /* This is just some function that I thought might would be implemented in the future

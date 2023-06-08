@@ -8,5 +8,4 @@
 - implement size t instead of int
 - create enums for return value for error handling
 - check pointers before asigning or accessing
-- change every type of variable to the same name
-- move functions into seperate files
+- create module that reads images to matricies
