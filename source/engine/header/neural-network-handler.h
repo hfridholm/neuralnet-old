@@ -9,10 +9,10 @@ extern void addit_oldbia_deltas(float** biasDeltas, int layerAmount, const int l
 
 extern bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], float learnRate, float momentum, float*** weightDerivs, float** biasDerivs, float*** oldWeightDeltas, float** oldBiasDeltas);
 
-extern bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets);
+extern bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets);
 
-extern bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets);
+extern bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets);
 
-extern bool create_node_values(float** nodeValues, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float* inputs);
+extern bool create_node_values(float** nodeValues, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float* inputs);
 
 #endif

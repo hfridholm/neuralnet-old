@@ -58,7 +58,7 @@ bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
   return true;
 }
 
-bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets)
+bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets)
 {
   cross_entropy_deriv(nodeDerivs[layerAmount - 2], nodeValues[layerAmount - 1], targets, layerSizes[layerAmount - 1]);
 
@@ -82,7 +82,7 @@ bool create_node_derivs(float** nodeDerivs, int layerAmount, const int layerSize
   return true;
 }
 
-bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets)
+bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float** nodeValues, float* targets)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -105,7 +105,7 @@ bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, int layerAm
   return true;
 }
 
-bool create_node_values(float** nodeValues, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float* inputs)
+bool create_node_values(float** nodeValues, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float* inputs)
 {
   copy_float_vector(nodeValues[0], inputs, layerSizes[0]);
 

@@ -9,9 +9,9 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "header/neural-activate-funcs.h"
 #include "header/neural-network-actions.h"
 #include "header/neural-network-handler.h"
-#include "header/neural-activate-funcs.h"
 #include "header/vector-matrix-handler.h"
 
 #endif

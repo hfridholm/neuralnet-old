@@ -176,30 +176,34 @@ float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth)
   return layerDerivs;
 }
 
-void layer_activ_values(float* activValues, float* layerValues, int layerWidth, int layerActive)
+void layer_activ_values(float* activValues, float* layerValues, int layerWidth, Activ layerActiv)
 {
-  switch(layerActive)
+  switch(layerActiv)
   {
-    case 1: sigmoid_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_NONE: return;
 
-    case 2: relu_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_SIGMOID: sigmoid_activ_values(activValues, layerValues, layerWidth); break;
 
-    case 3: tanh_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_RELU: relu_activ_values(activValues, layerValues, layerWidth); break;
 
-    case 4: softmax_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_TANH: tanh_activ_values(activValues, layerValues, layerWidth); break;
+
+    case ACTIV_SOFTMAX: softmax_activ_values(activValues, layerValues, layerWidth); break;
   }
 }
 
-void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, int layerActive)
+void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, Activ layerActiv)
 {
-  switch(layerActive)
+  switch(layerActiv)
   {
-    case 1: apply_sigmoid_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_NONE: return;
 
-    case 2: apply_relu_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_SIGMOID: apply_sigmoid_derivs(layerDerivs, layerValues, layerWidth); break;
 
-    case 3: apply_tanh_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_RELU: apply_relu_derivs(layerDerivs, layerValues, layerWidth); break;
 
-    case 4: apply_softmax_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_TANH: apply_tanh_derivs(layerDerivs, layerValues, layerWidth); break;
+
+    case ACTIV_SOFTMAX: apply_softmax_derivs(layerDerivs, layerValues, layerWidth); break;
   }
 }

@@ -33,8 +33,12 @@ extern float* apply_relu_derivs(float* layerDerivs, float* layerValues, int laye
 
 extern float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth);
 
-extern void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, int layerActive);
 
-extern void layer_activ_values(float* activValues, float* layerValues, int layerWidth, int layerActive);
+typedef enum { ACTIV_NONE, ACTIV_SIGMOID, ACTIV_RELU, ACTIV_TANH, ACTIV_SOFTMAX } Activ;
+
+
+extern void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, Activ layerActiv);
+
+extern void layer_activ_values(float* activValues, float* layerValues, int layerWidth, Activ layerActiv);
 
 #endif

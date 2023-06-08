@@ -1,6 +1,6 @@
 #include "../engine.h"
 
-bool train_network_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
+bool train_network_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -12,7 +12,7 @@ bool train_network_stcast(float*** weightDeltas, float** biasDeltas, int layerAm
   return true;
 }
 
-void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
+void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -27,7 +27,7 @@ void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
   free_float_matrix(&biasDerivs, layerAmount - 1, maxShape);
 }
 
-void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float* inputs, float* targets)
+void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float* inputs, float* targets)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -40,7 +40,7 @@ void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, int layerAmo
   free_float_matrix(&nodeValues, layerAmount, maxShape);
 }
 
-void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float** inputs, float** targets, int batchSize)
+void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float** inputs, float** targets, int batchSize)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -62,7 +62,7 @@ void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, int l
   multi_scale_fmatrix(meanBiasDerivs, meanBiasDerivs, layerAmount - 1, maxShape, 1.0f / batchSize);
 }
 
-void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
+void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -77,7 +77,7 @@ void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, int layerAm
   free_float_matrix(&meanBiasDerivs, layerAmount - 1, maxShape);
 }
 
-bool train_network_minbat(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
+bool train_network_minbat(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -89,7 +89,7 @@ bool train_network_minbat(float*** weightDeltas, float** biasDeltas, int layerAm
   return true;
 }
 
-bool frwrd_network_inputs(float* outputs, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float* inputs)
+bool frwrd_network_inputs(float* outputs, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float* inputs)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -104,7 +104,7 @@ bool frwrd_network_inputs(float* outputs, int layerAmount, const int layerSizes[
   return true;
 }
 
-void train_epochs_stcast(int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount)
+void train_epochs_stcast(int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -126,7 +126,7 @@ void train_epochs_stcast(int layerAmount, const int layerSizes[], const int laye
   free_float_matrix(&biasDeltas, layerAmount - 1, maxShape);
 }
 
-void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
+void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, int layerAmount, const int layerSizes[], const Activ layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
