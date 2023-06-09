@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <time.h>
+#include <stdint.h>
 
 #include "header/neural-activate-funcs.h"
 #include "header/neural-network-actions.h"

@@ -350,14 +350,14 @@ bool strmat_index_filter(char*** result, char*** strmat, int height, int width, 
 {
   if(result == NULL || strmat == NULL || indexes == NULL) return false;
 
-  for(int hIndex = 0; hIndex < height; hIndex += 1)
+  for(int index = 0; index < amount; index += 1)
   {
-    for(int index = 0; index < amount; index += 1)
+    int wIndex = indexes[index];
+
+    if(wIndex < 0 || wIndex >= width) return false;
+
+    for(int hIndex = 0; hIndex < height; hIndex += 1)
     {
-      int wIndex = indexes[index];
-
-      if(wIndex < 0 || wIndex >= width) return false;
-
       copy_char_string(result[hIndex][index], strmat[hIndex][wIndex], length);
     }
   }

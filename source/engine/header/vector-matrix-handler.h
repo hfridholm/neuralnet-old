@@ -1,6 +1,10 @@
 #ifndef VECTOR_MATRIX_HANDLER_H
 #define VECTOR_MATRIX_HANDLER_H
 
+extern bool matrix_index_filter(float** result, float** matrix, int height, int width, const int indexes[], int amount);
+
+extern bool matrix_column_vector(float* vector, float** matrix, int height, int width, int column);
+
 extern bool float_vector_minmax(float* minValue, float* maxValue, float* vector, int length);
 
 extern float create_random_float(float minimum, float maximum);

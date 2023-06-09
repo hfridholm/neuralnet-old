@@ -1,5 +1,37 @@
 #include "../engine.h"
 
+bool matrix_index_filter(float** result, float** matrix, int height, int width, const int indexes[], int amount)
+{
+  if(result == NULL || matrix == NULL || indexes == NULL) return false;
+
+  for(int index = 0; index < amount; index += 1)
+  {
+    int wIndex = indexes[index];
+
+    if(wIndex < 0 || wIndex >= width) return false;
+
+    for(int hIndex = 0; hIndex < height; hIndex += 1)
+    {
+      result[hIndex][index] = matrix[hIndex][wIndex];
+    }
+  }
+  return true;
+}
+
+
+bool matrix_column_vector(float* vector, float** matrix, int height, int width, int column)
+{
+  if(vector == NULL || matrix == NULL) return false;
+
+  if(column < 0 || column >= width) return false;
+
+  for(int index = 0; index < height; index += 1)
+  {
+    vector[index] = matrix[index][column];
+  }
+  return true;
+}
+
 bool float_vector_minmax(float* minValue, float* maxValue, float* vector, int length)
 {
   if(length <= 0) return false;
