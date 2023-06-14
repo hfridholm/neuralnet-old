@@ -1,41 +1,75 @@
 #include "../image.h"
 
-float** image_pixels_nrmmat(int* width, int* height, const char imgPath[])
+float* pixels_nrmliz_vector(int* imgWidth, int* imgHeight, const char filePath[])
 {
-  int imgWidth, imgHeight, imgComp;
-  uint8_t* imgPixels = (uint8_t*) stbi_load(imgPath, &imgWidth, &imgHeight, &imgComp, 0);
+  int tempWidth, tempHeight, tempComp;
+
+  uint8_t* imgPixels = (uint8_t*) stbi_load(filePath, &tempWidth, &tempHeight, &tempComp, 0);
 
   if(imgPixels == NULL)
   {
     return NULL;
   }
 
-  *width = imgWidth;
-  *height = imgHeight;
+  if(tempComp != 1)
+  {
+    free(imgPixels);
+    return NULL;
+  }
+
+  *imgWidth = tempWidth;
+  *imgHeight = tempHeight;
+  
+  int length = (tempWidth * tempHeight);
+
+  float* vector = create_float_vector(length);
+
+  for(int index = 0; index < length; index += 1)
+  {
+    vector[index] = (float) imgPixels[index] / 255.f;
+  }
+  
+  free(imgPixels);
+
+  return vector;
+}
+
+float** pixels_nrmliz_matrix(int* imgWidth, int* imgHeight, const char filePath[])
+{
+  int tempWidth, tempHeight, tempComp;
+
+  uint8_t* imgPixels = (uint8_t*) stbi_load(filePath, &tempWidth, &tempHeight, &tempComp, 0);
+
+  if(imgPixels == NULL)
+  {
+    return NULL;
+  }
+
+  if(tempComp != 1)
+  {
+    free(imgPixels);
+    return NULL;
+  }
+
+  *imgWidth = tempWidth;
+  *imgHeight = tempHeight;
   
   
-  int matHeight = imgWidth * imgHeight;
+  int matHeight = tempWidth * tempHeight;
   int matWidth = 3;
 
   float** matrix = create_float_matrix(matHeight, matWidth);
 
 
-  for(int yValue = 0; yValue < imgHeight; yValue += 1)
+  for(int yValue = 0; yValue < tempHeight; yValue += 1)
   {
-    for(int xValue = 0; xValue < imgWidth; xValue += 1)
+    for(int xValue = 0; xValue < tempWidth; xValue += 1)
     {
-      float normX = (float) xValue / (imgWidth - 1);
-      float normY = (float) yValue / (imgHeight - 1);
+      int index = (yValue * tempWidth + xValue);
 
-      int index = (yValue * imgWidth + xValue);
-
-      float alpha = (float) imgPixels[index];
-
-      float normAlpha = (float) alpha / 255.0f;
-
-      matrix[index][0] = normX;
-      matrix[index][1] = normY;
-      matrix[index][2] = normAlpha;
+      matrix[index][0] = (float) xValue / (tempWidth - 1);
+      matrix[index][1] = (float) yValue / (tempHeight - 1);
+      matrix[index][2] = (float) imgPixels[index] / 255.0f;
     }
   }
 

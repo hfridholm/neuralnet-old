@@ -1,7 +1,9 @@
 #ifndef IMAGE_READ_WRITE_H
 #define IMAGE_READ_WRITE_H
 
-float** image_pixels_nrmmat(int* width, int* height, const char imgPath[]);
+float* pixels_nrmliz_vector(int* imgWidth, int* imgHeight, const char filePath[]);
+
+float** pixels_nrmliz_matrix(int* imgWidth, int* imgHeight, const char filePath[]);
 
 bool write_nrmmat_pixels(const char filePath[], float** nrmmat, int width, int height);
 

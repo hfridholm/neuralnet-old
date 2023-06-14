@@ -1,61 +1,58 @@
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 #include "../engine/engine.h"
 #include "../dataset/dataset.h"
+#include "../image/image.h"
+
+char* extract_shift_args(int* argc, char*** argv)
+{
+  if(*argc <= 0) return NULL;
+
+  char* result = **argv;
+  (*argc) -= 1;
+  (*argv) += 1;
+  return result;
+}
 
 int main(int argc, char* argv[])
 {
   srand(time(NULL));
 
-  char filePath[256];
+  //const char* program =
+  extract_shift_args(&argc, &argv);
 
-  if(argc >= 2) strcpy(filePath, argv[1]);
+  const char* imgPath = extract_shift_args(&argc, &argv);
 
-  else strcpy(filePath, "../source/assets/test-dataset.csv");
-
-  int inputNodes = 2;
-  int outputNodes = 1;
-
-  // Fix input system for input and output nodes
-  char* inputHeaders[] = {"number1", "grupp BIG"};
-  char* targetHeaders[] = {"Team 4"};
-
-  int lines = 0;
-  if(!count_file_lines(&lines, filePath)) return 1;
-
-  float** inputs = create_float_matrix(lines, inputNodes);
-  float** targets = create_float_matrix(lines, outputNodes);
-
-
-  int batchSize = 0;
-
-  if(!csv_headers_inptrgs(inputs, targets, &batchSize, inputHeaders, inputNodes, targetHeaders, outputNodes, filePath))
+  if(imgPath == NULL)
   {
-    printf("Error csv_inputs_targets\n");
+    printf("No file was imputted\n");
+    return 1;
+  }
+
+  
+  int imgWidth, imgHeight;
+  float** matrix = pixels_nrmliz_matrix(&imgWidth, &imgHeight, imgPath);
+
+  if(matrix == NULL)
+  {
+    printf("Could not parse image\n");
+    return 1;
   }
 
 
-  for(int index = 0; index < batchSize; index += 1)
-  {
-    printf("Inputs: (");
-    for(int iIndex = 0; iIndex < inputNodes; iIndex += 1)
-    {
-      printf("%.2f ", inputs[index][iIndex]);
-    }
-    printf(") ");
+  float** inputs = create_float_matrix(imgWidth * imgHeight, 2);
+  float** targets = create_float_matrix(imgWidth * imgHeight, 1);
 
-    printf("Targets: (");
-    for(int tIndex = 0; tIndex < outputNodes; tIndex += 1)
-    {
-      printf("%.2f ", targets[index][tIndex]);
-    }
-    printf(")\n");
-  }
+  matrix_index_filter(inputs, matrix, imgWidth * imgHeight, 3, (int[]) {0, 1}, 2);
+  matrix_index_filter(targets, matrix, imgWidth * imgHeight, 3, (int[]) {2}, 1);
 
 
 
-  /*int layerAmount = 3;
+  int layerAmount = 4;
 
-  int layerSizes[] = {inputNodes, 4, outputNodes};
-  int layerActivs[] = {1, 1, 1};
+  int layerSizes[] = {2, 7, 4, 1};
+  Activ layerActivs[] = {ACTIV_SIGMOID, ACTIV_SIGMOID, ACTIV_SIGMOID};
 
   int maxShape = maximum_layer_shape(layerSizes, layerAmount);
 
@@ -66,72 +63,57 @@ int main(int argc, char* argv[])
   biases = fill_fmatrix_random(biases, layerAmount - 1, maxShape, -1.0, +1.0);
 
 
+  float learnRate = 0.1;
+  float momentum = 0.1;
+  int epochAmount = 10000;
 
 
-  float learnRate = 0.7;
-  float momentum = 0.5;
-  int epochAmount = 1000;
-
-
-  float* outputs = create_float_vector(layerSizes[layerAmount - 1]);
+  train_epochs_stcast(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, imgWidth * imgHeight, epochAmount);
 
 
 
-  for(int index = 0; index < batchSize; index += 1)
+  int outWidth = 256;
+  int outHeight = 256;
+
+  float* outPixels = create_float_vector(outWidth * outHeight);
+
+
+  for(int yValue = 0; yValue < outHeight; yValue += 1)
   {
-    frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[index]);
-
-    printf("(");
-    for(int iIndex = 0; iIndex < layerSizes[0]; iIndex += 1)
+    for(int xValue = 0; xValue < outWidth; xValue += 1)
     {
-      printf("%.2f ", inputs[index][iIndex]);
-    }
-    printf(") -> ");
+      float output[10];
 
-    printf("(");
-    for(int oIndex = 0; oIndex < layerSizes[layerAmount - 1]; oIndex += 1)
-    {
-      printf("%.2f ", outputs[oIndex]);
+      float normX = (float) xValue / (outWidth - 1);
+      float normY = (float) yValue / (outHeight - 1);
+
+      float outInputs[] = {normX, normY};
+
+      frwrd_network_inputs(output, layerAmount, layerSizes, layerActivs, weights, biases, outInputs);
+
+      int index = (yValue * outWidth + xValue);
+
+      outPixels[index] = output[0];
     }
-    printf(")\n");
   }
-  printf("\n");
 
 
-  train_epochs_stcast(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, batchSize, epochAmount);
+  write_nrmarr_pixels("../source/assets/result101.png", outPixels, outWidth, outHeight);
 
-
-  for(int index = 0; index < batchSize; index += 1)
-  {
-    frwrd_network_inputs(outputs, layerAmount, layerSizes, layerActivs, weights, biases, inputs[index]);
-
-    printf("(");
-    for(int iIndex = 0; iIndex < layerSizes[0]; iIndex += 1)
-    {
-      printf("%.2f ", inputs[index][iIndex]);
-    }
-    printf(") -> ");
-
-    printf("(");
-    for(int oIndex = 0; oIndex < layerSizes[layerAmount - 1]; oIndex += 1)
-    {
-      printf("%.2f ", outputs[oIndex]);
-    }
-    printf(")\n");
-  }
-  printf("\n");
+  free_float_vector(&outPixels, outWidth * outHeight);
 
 
 
-  free_float_vector(outputs, layerSizes[layerAmount - 1]);
+
+  free_fmatrix_array(&weights, layerAmount - 1, maxShape, maxShape);
+  free_float_matrix(&biases, layerAmount - 1, maxShape);
 
 
-  free_fmatrix_array(weights, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(biases, layerAmount - 1, maxShape);*/
+  free_float_matrix(&inputs, imgWidth * imgHeight, 2);
+  free_float_matrix(&targets, imgWidth * imgHeight, 1);
 
 
-  free_float_matrix(&inputs, lines, inputNodes);
-  free_float_matrix(&targets, lines, outputNodes);
-
+  free_float_matrix(&matrix, imgWidth * imgHeight, 3);
+  
   return 0;
 }

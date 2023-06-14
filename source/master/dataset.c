@@ -1,5 +1,9 @@
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 #include "../engine/engine.h"
 #include "../dataset/dataset.h"
+#include "../image/image.h"
 
 int main(int argc, char* argv[])
 {
