@@ -49,18 +49,19 @@ int main(int argc, char* argv[])
 
 
 
-  int layerAmount = 4;
+  int layers = 4;
+  int sizes[] = {2, 7, 4, 1};
+  int activs[] = {ACTIV_SIGMOID, ACTIV_SIGMOID, ACTIV_SIGMOID};
 
-  int layerSizes[] = {2, 7, 4, 1};
-  Activ layerActivs[] = {ACTIV_SIGMOID, ACTIV_SIGMOID, ACTIV_SIGMOID};
+  int maxShape = maximum_layer_shape(sizes, layers);
 
-  int maxShape = maximum_layer_shape(layerSizes, layerAmount);
+  float*** weights = create_fmatrix_array(layers - 1, maxShape, maxShape);
+  float** biases = create_float_matrix(layers - 1, maxShape);
 
-  float*** weights = create_fmatrix_array(layerAmount - 1, maxShape, maxShape);
-  float** biases = create_float_matrix(layerAmount - 1, maxShape);
+  weights = fill_fmatarr_random(weights, layers - 1, maxShape, maxShape, -1.0, +1.0);
+  biases = fill_fmatrix_random(biases, layers - 1, maxShape, -1.0, +1.0);
 
-  weights = fill_fmatarr_random(weights, layerAmount - 1, maxShape, maxShape, -1.0, +1.0);
-  biases = fill_fmatrix_random(biases, layerAmount - 1, maxShape, -1.0, +1.0);
+  Network network = {layers, sizes, activs, weights, biases};
 
 
   float learnRate = 0.1;
@@ -68,7 +69,7 @@ int main(int argc, char* argv[])
   int epochAmount = 10000;
 
 
-  train_epochs_stcast(layerAmount, layerSizes, layerActivs, weights, biases, learnRate, momentum, inputs, targets, imgWidth * imgHeight, epochAmount);
+  train_epochs_stcast(network, learnRate, momentum, inputs, targets, imgWidth * imgHeight, epochAmount);
 
 
 
@@ -89,7 +90,7 @@ int main(int argc, char* argv[])
 
       float outInputs[] = {normX, normY};
 
-      frwrd_network_inputs(output, layerAmount, layerSizes, layerActivs, weights, biases, outInputs);
+      frwrd_network_inputs(output, network, outInputs);
 
       int index = (yValue * outWidth + xValue);
 
@@ -105,8 +106,8 @@ int main(int argc, char* argv[])
 
 
 
-  free_fmatrix_array(&weights, layerAmount - 1, maxShape, maxShape);
-  free_float_matrix(&biases, layerAmount - 1, maxShape);
+  free_fmatrix_array(&network.weights, network.layers - 1, maxShape, maxShape);
+  free_float_matrix(&network.biases, network.layers - 1, maxShape);
 
 
   free_float_matrix(&inputs, imgWidth * imgHeight, 2);

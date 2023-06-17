@@ -19,31 +19,21 @@ int main(int argc, char* argv[])
 {
   srand(time(NULL));
 
-  //const char* program =
-  extract_shift_args(&argc, &argv);
+  int layers = 3;
+  int sizes[] = {2, 3, 1};
+  int activs[] = {1, 4};
 
-  const char* imgPath = extract_shift_args(&argc, &argv);
+  int maxShape = maximum_layer_shape(sizes, layers);
 
-  if(imgPath == NULL)
-  {
-    printf("No file was imputted\n");
-    return 1;
-  }
+  float*** weights = create_fmatrix_array(layers - 1, maxShape, maxShape);
+  float** biases = create_float_matrix(layers - 1, maxShape);
 
-  int imgWidth, imgHeight;
-  float* pixels = pixels_nrmliz_vector(&imgWidth, &imgHeight, imgPath);
- 
-  printf("%s is %dx%d pixels\n", imgPath, imgWidth, imgHeight);
+  Network network = {layers, sizes, activs, weights, biases};
 
-  
-  for(int index = 0; index < (imgWidth * imgHeight); index += 1)
-  {
-    printf("%.2f, ", pixels[index]);
-  }
-  printf("\n");
+  frwrd_network_inputs(NULL, network, NULL);
 
-
-  free_float_vector(&pixels, imgWidth * imgHeight);
+  free_fmatrix_array(&weights, layers - 1, maxShape, maxShape);
+  free_float_matrix(&biases, layers - 1, maxShape);
 
   return 0;
 }

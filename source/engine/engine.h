@@ -10,6 +10,15 @@
 #include <time.h>
 #include <stdint.h>
 
+typedef struct
+{
+  int layers;
+  int* sizes;
+  int* activs;
+  float*** weights;
+  float** biases;
+} Network;
+
 #include "header/neural-activate-funcs.h"
 #include "header/neural-network-actions.h"
 #include "header/neural-network-handler.h"
