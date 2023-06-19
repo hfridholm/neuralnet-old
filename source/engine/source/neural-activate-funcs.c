@@ -30,15 +30,28 @@ float tanh_deriv_value(float tanhValue)
   return (1 - tanhValue * tanhValue);
 }
 
-float* cross_entropy_deriv(float* result, float* nodes, float* targets, int amount)
+float* cross_entropy_derivs(float* derivs, float* nodes, float* targets, int amount)
 {
-  if(result == NULL || nodes == NULL || targets == NULL) return NULL;
+  if(derivs == NULL || nodes == NULL || targets == NULL) return NULL;
  
   for(int index = 0; index < amount; index += 1)
   {
-    result[index] = 2 * (nodes[index] - targets[index]);
+    derivs[index] = 2 * (nodes[index] - targets[index]);
   }
-  return result;
+  return derivs;
+}
+
+float cross_entropy_cost(float* nodes, float* targets, int amount)
+{
+  if(nodes == NULL || targets == NULL) return -1.0f;
+
+  float costValue = 0.0f;
+
+  for(int index = 0; index < amount; index += 1)
+  {
+    costValue += pow(nodes[index] - targets[index], 2);
+  }
+  return costValue / (float) amount;
 }
 
 float* softmax_activ_values(float* activValues, float* layerValues, int layerWidth)

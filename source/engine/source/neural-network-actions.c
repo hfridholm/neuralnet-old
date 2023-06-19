@@ -1,5 +1,6 @@
 #include "../engine.h"
 
+// Tip: Check pointer arguments before assigning
 bool train_network_stcast(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
@@ -21,7 +22,7 @@ void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, Network net
 
   frwrd_create_derivs(weightDerivs, biasDerivs, network, inputs, targets);
 
-  create_weibia_deltas(weightDeltas, biasDeltas, network.layers, network.sizes, learnRate, momentum, weightDerivs, biasDerivs, oldWeightDeltas, oldBiasDeltas);
+  create_weibia_deltas(weightDeltas, biasDeltas, network.layers, maxShape, learnRate, momentum, weightDerivs, biasDerivs, oldWeightDeltas, oldBiasDeltas);
 
   free_fmatrix_array(&weightDerivs, network.layers - 1, maxShape, maxShape);
   free_float_matrix(&biasDerivs, network.layers - 1, maxShape);
@@ -40,6 +41,8 @@ void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, Network netw
   free_float_matrix(&nodeValues, network.layers, maxShape);
 }
 
+// Tip: store mean weight/bias derivs in temp variables before asigning pointers
+// Tip: Check pointer arguments before assigning
 void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, Network network, float** inputs, float** targets, int batchSize)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
@@ -71,12 +74,13 @@ void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, Network net
 
   mean_weibia_derivs(meanWeightDerivs, meanBiasDerivs, network, inputs, targets, batchSize);
 
-  create_weibia_deltas(weightDeltas, biasDeltas, network.layers, network.sizes, learnRate, momentum, meanWeightDerivs, meanBiasDerivs, oldWeightDeltas, oldBiasDeltas);
+  create_weibia_deltas(weightDeltas, biasDeltas, network.layers, maxShape, learnRate, momentum, meanWeightDerivs, meanBiasDerivs, oldWeightDeltas, oldBiasDeltas);
 
   free_fmatrix_array(&meanWeightDerivs, network.layers - 1, maxShape, maxShape);
   free_float_matrix(&meanBiasDerivs, network.layers - 1, maxShape);
 }
 
+// Tip: Check pointer arguments before assigning
 bool train_network_minbat(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
@@ -89,6 +93,7 @@ bool train_network_minbat(float*** weightDeltas, float** biasDeltas, Network net
   return true;
 }
 
+// Tip: Check pointer arguments before assigning
 bool frwrd_network_inputs(float* outputs, Network network, float* inputs)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
@@ -146,10 +151,3 @@ void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, Network netwo
 
   free_integ_array(&randIndexes, batchSize);
 }
-
-/* This is just some function that I thought might would be implemented in the future
-   void train_stcast(int network.layers, const int network.sizes[], const int layerActivs[], float*** weights, float** biases, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int maxTime)
-   {
-
-   }
- */

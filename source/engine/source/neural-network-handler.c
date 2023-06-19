@@ -4,17 +4,17 @@ int maximum_layer_shape(const int networkSizes[], int networkLayers)
 {
   int maxShape = 0;
 
-  for(int lIndex = 0; lIndex < networkLayers; lIndex += 1)
+  for(int layerIndex = 0; layerIndex < networkLayers; layerIndex += 1)
   {
-    if(networkSizes[lIndex] > maxShape) maxShape = networkSizes[lIndex];
+    if(networkSizes[layerIndex] <= maxShape) continue;
+
+    maxShape = networkSizes[layerIndex];
   }
   return maxShape;
 }
 
-void addit_oldwei_deltas(float*** weightDeltas, int networkLayers, const int networkSizes[], float momentum, float*** oldWeightDeltas)
+void addit_oldwei_deltas(float*** weightDeltas, int networkLayers, int maxShape, float momentum, float*** oldWeightDeltas)
 {
-  int maxShape = maximum_layer_shape(networkSizes, networkLayers);
-
   float*** tempWeightDeltas = create_fmatrix_array(networkLayers - 1, maxShape, maxShape);
 
   multi_scale_fmatarr(tempWeightDeltas, oldWeightDeltas, networkLayers - 1, maxShape, maxShape, momentum);
@@ -24,10 +24,8 @@ void addit_oldwei_deltas(float*** weightDeltas, int networkLayers, const int net
   free_fmatrix_array(&tempWeightDeltas, networkLayers - 1, maxShape, maxShape);
 }
 
-void addit_oldbia_deltas(float** biasDeltas, int networkLayers, const int networkSizes[], float momentum, float** oldBiasDeltas)
+void addit_oldbia_deltas(float** biasDeltas, int networkLayers, int maxShape, float momentum, float** oldBiasDeltas)
 {
-  int maxShape = maximum_layer_shape(networkSizes, networkLayers);
-
   float** tempBiasDeltas = create_float_matrix(networkLayers - 1, maxShape);
 
   multi_scale_fmatrix(tempBiasDeltas, oldBiasDeltas, networkLayers - 1, maxShape, momentum);
@@ -37,22 +35,20 @@ void addit_oldbia_deltas(float** biasDeltas, int networkLayers, const int networ
   free_float_matrix(&tempBiasDeltas, networkLayers - 1, maxShape);
 }
 
-bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int networkLayers, const int networkSizes[], float learnRate, float momentum, float*** weightDerivs, float** biasDerivs, float*** oldWeightDeltas, float** oldBiasDeltas)
+bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int networkLayers, int maxShape, float learnRate, float momentum, float*** weightDerivs, float** biasDerivs, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
-  int maxShape = maximum_layer_shape(networkSizes, networkLayers);
-
   multi_scale_fmatarr(weightDeltas, weightDerivs, networkLayers - 1, maxShape, maxShape, -learnRate);
 
   if(oldWeightDeltas != NULL)
   {
-    addit_oldwei_deltas(weightDeltas, networkLayers, networkSizes, momentum, oldWeightDeltas);
+    addit_oldwei_deltas(weightDeltas, networkLayers, maxShape, momentum, oldWeightDeltas);
   }
 
   multi_scale_fmatrix(biasDeltas, biasDerivs, networkLayers - 1, maxShape, -learnRate);
 
   if(oldBiasDeltas != NULL)
   {
-    addit_oldbia_deltas(biasDeltas, networkLayers, networkSizes, momentum, oldBiasDeltas);
+    addit_oldbia_deltas(biasDeltas, networkLayers, maxShape, momentum, oldBiasDeltas);
   }
 
   return true;
@@ -60,7 +56,7 @@ bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int network
 
 bool create_node_derivs(float** nodeDerivs, Network network, float** nodeValues, float* targets)
 {
-  cross_entropy_deriv(nodeDerivs[network.layers - 2], nodeValues[network.layers - 1], targets, network.sizes[network.layers - 1]);
+  cross_entropy_derivs(nodeDerivs[network.layers - 2], nodeValues[network.layers - 1], targets, network.sizes[network.layers - 1]);
 
   apply_activ_derivs(nodeDerivs[network.layers - 2], nodeValues[network.layers - 1], network.sizes[network.layers - 1], network.activs[network.layers - 2]);
 

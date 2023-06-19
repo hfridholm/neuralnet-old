@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
   int layers = 3;
   int sizes[] = {2, 3, 1};
-  int activs[] = {1, 4};
+  Activ activs[] = {1, 4};
 
   int maxShape = maximum_layer_shape(sizes, layers);
 

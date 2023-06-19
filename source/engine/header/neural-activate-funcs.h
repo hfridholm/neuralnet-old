@@ -13,7 +13,9 @@ extern float tanh_activ_value(float floatValue);
 
 extern float tanh_deriv_value(float tanhValue);
 
-extern float* cross_entropy_deriv(float* result, float* nodes, float* targets, int amount);
+extern float* cross_entropy_derivs(float* derivs, float* nodes, float* targets, int amount);
+
+extern float cross_entropy_cost(float* nodes, float* targets, int amount);
 
 extern float* softmax_activ_values(float* activValues, float* layerValues, int layerWidth);
 
@@ -32,10 +34,6 @@ extern float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int l
 extern float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth);
 
 extern float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth);
-
-
-typedef enum { ACTIV_NONE, ACTIV_SIGMOID, ACTIV_RELU, ACTIV_TANH, ACTIV_SOFTMAX } Activ;
-
 
 extern void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, Activ layerActiv);
 

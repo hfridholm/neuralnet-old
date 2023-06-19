@@ -10,11 +10,13 @@
 #include <time.h>
 #include <stdint.h>
 
+typedef enum { ACTIV_NONE, ACTIV_SIGMOID, ACTIV_RELU, ACTIV_TANH, ACTIV_SOFTMAX } Activ;
+
 typedef struct
 {
   int layers;
   int* sizes;
-  int* activs;
+  Activ* activs;
   float*** weights;
   float** biases;
 } Network;

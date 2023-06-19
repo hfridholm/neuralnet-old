@@ -186,6 +186,20 @@ void free_fmatrix_array(float**** matarr, int amount, int height, int width)
   *matarr = NULL;
 }
 
+float*** create_random_fmatarr(int amount, int height, int width, float minimum, float maximum)
+{
+  float*** matarr = create_fmatrix_array(amount, height, width);
+
+  return fill_fmatarr_random(matarr, amount, height, width, minimum, maximum);
+}
+
+float** create_random_fmatrix(int height, int width, float minimum, float maximum)
+{
+  float** matrix = create_float_matrix(height, width);
+
+  return fill_fmatrix_random(matrix, height, width, minimum, maximum);
+}
+
 float*** fill_fmatarr_random(float*** matarr, int amount, int height, int width, float minimum, float maximum)
 {
   if(matarr == NULL) return NULL;

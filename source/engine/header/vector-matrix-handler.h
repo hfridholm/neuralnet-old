@@ -21,6 +21,10 @@ extern void free_float_matrix(float*** matrix, int height, int width);
 
 extern void free_fmatrix_array(float**** matarr, int amount, int height, int width);
 
+extern float** create_random_fmatrix(int height, int width, float minimum, float maximum);
+
+extern float*** create_random_fmatarr(int amount, int height, int width, float minimum, float maximum);
+
 extern float*** fill_fmatarr_random(float*** matarr, int amount, int height, int width, float minimum, float maximum);
 
 extern float** fill_fmatrix_random(float** matrix, int height, int width, float minimum, float maximum);

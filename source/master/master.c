@@ -51,15 +51,12 @@ int main(int argc, char* argv[])
 
   int layers = 4;
   int sizes[] = {2, 7, 4, 1};
-  int activs[] = {ACTIV_SIGMOID, ACTIV_SIGMOID, ACTIV_SIGMOID};
+  Activ activs[] = {ACTIV_SIGMOID, ACTIV_SIGMOID, ACTIV_SIGMOID};
 
   int maxShape = maximum_layer_shape(sizes, layers);
 
-  float*** weights = create_fmatrix_array(layers - 1, maxShape, maxShape);
-  float** biases = create_float_matrix(layers - 1, maxShape);
-
-  weights = fill_fmatarr_random(weights, layers - 1, maxShape, maxShape, -1.0, +1.0);
-  biases = fill_fmatrix_random(biases, layers - 1, maxShape, -1.0, +1.0);
+  float*** weights = create_random_fmatarr(layers - 1, maxShape, maxShape, -1.0f, +1.0f);
+  float** biases = create_random_fmatrix(layers - 1, maxShape, -1.0f, +1.0f);
 
   Network network = {layers, sizes, activs, weights, biases};
 
