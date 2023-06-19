@@ -1,10 +1,21 @@
-#include "../dataset.h"
+#include "../persue.h"
 
-bool prepare_strmat_data(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* onehotHeaders[], int onehotAmount, char* nrmlizHeaders[], int nrmlizAmount)
+static bool text_file_tokens_t(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[], char** strArray)
 {
-  if(!onehot_strmat_headers(result, newWidth, strmat, height, width, length, onehotHeaders, onehotAmount)) return false;
+  if(!extract_text_file(strArray, height, filePath)) return false;
 
-  return nrmliz_strmat_headers(result, result, height, *newWidth, length, nrmlizHeaders, nrmlizAmount);
+  string_array_tokens(tokens, width, length, strArray, *height, delim);
+
+  return true;
+}
+
+bool text_file_tokens(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[])
+{
+  char** strArray = create_string_array(256, 256);
+
+  bool result = text_file_tokens_t(tokens, height, width, length, filePath, delim, strArray);
+
+  free_string_array(&strArray, 256, 256); return result;
 }
 
 bool nrmliz_strmat_header(char*** result, char*** strmat, int height, int width, int length, const char header[])
@@ -56,6 +67,22 @@ bool nrmliz_strmat_headers(char*** result, char*** strmat, int height, int width
     nrmliz_strmat_header(result, result, height, width, length, headers[index]);
   }
   return true;
+}
+
+bool onehot_string_matrix(char*** result, char** strarr1, int height, char** strarr2, int width)
+{
+  for(int hIndex = 0; hIndex < height; hIndex += 1)
+  {
+    for(int wIndex = 0; wIndex < width; wIndex += 1)
+    {
+      if(!strcmp(strarr1[hIndex], strarr2[wIndex]))
+      {
+        strcpy(result[hIndex][wIndex], "1");
+      }
+      else strcpy(result[hIndex][wIndex], "0");
+    }
+  }
+  return result;
 }
 
 bool onehot_strmat_header(char*** result, int* newWidth, char*** strmat, int height, int width, int length, const char header[])
@@ -126,22 +153,6 @@ bool onehot_strmat_headers(char*** result, int* newWidth, char*** strmat, int he
   return true;
 }
 
-bool onehot_string_matrix(char*** result, char** strarr1, int height, char** strarr2, int width)
-{
-  for(int hIndex = 0; hIndex < height; hIndex += 1)
-  {
-    for(int wIndex = 0; wIndex < width; wIndex += 1)
-    {
-      if(!strcmp(strarr1[hIndex], strarr2[wIndex]))
-      {
-        strcpy(result[hIndex][wIndex], "1");
-      }
-      else strcpy(result[hIndex][wIndex], "0");
-    }
-  }
-  return result;
-}
-
 bool tokens_inpts_trgts(float** inputs, float** targets, char*** tokens, int height, int width, int length, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount)
 {
   char*** inputTokens = create_string_matrix(height, width, length);
@@ -157,24 +168,6 @@ bool tokens_inpts_trgts(float** inputs, float** targets, char*** tokens, int hei
   free_string_matrix(&targetTokens, height, width, length);
 
   return true;
-}
-
-static bool text_file_tokens_t(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[], char** strArray)
-{
-  if(!extract_text_file(strArray, height, filePath)) return false;
-
-  string_array_tokens(tokens, width, length, strArray, *height, delim);
-
-  return true;
-}
-
-bool text_file_tokens(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[])
-{
-  char** strArray = create_string_array(256, 256);
-
-  bool result = text_file_tokens_t(tokens, height, width, length, filePath, delim, strArray);
-
-  free_string_array(&strArray, 256, 256); return result;
 }
 
 static bool csv_indexes_inptrgs_t(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[], char*** tokens)
@@ -255,4 +248,11 @@ bool csv_headers_inptrgs(float** inputs, float** targets, int* height, char* inp
   bool result = csv_headers_inptrgs_t(inputs, targets, height, inputHeaders, inputAmount, targetHeaders, targetAmount, filePath, tokens);
 
   free_string_matrix(&tokens, 100, 10, 10); return result;
+}
+
+bool prepare_strmat_data(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* onehotHeaders[], int onehotAmount, char* nrmlizHeaders[], int nrmlizAmount)
+{
+  if(!onehot_strmat_headers(result, newWidth, strmat, height, width, length, onehotHeaders, onehotAmount)) return false;
+
+  return nrmliz_strmat_headers(result, result, height, *newWidth, length, nrmlizHeaders, nrmlizAmount);
 }

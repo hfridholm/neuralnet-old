@@ -1,14 +1,14 @@
-#include "../dataset.h"
+#include "../review.h"
 
 const size_t LINE_BUFFER_SIZE = 256;
 
-bool count_file_lines(int* amount, const char filePath[])
+int count_file_lines(const char filePath[])
 {
-  if(amount == NULL || filePath == NULL) return false;
+  if(filePath == NULL) return 0;
 
   FILE* filePointer = fopen(filePath, "r");
 
-  if(filePointer == NULL) return false;
+  if(filePointer == NULL) return 0;
   
   char buffer[LINE_BUFFER_SIZE];
   int index = 0;
@@ -19,8 +19,7 @@ bool count_file_lines(int* amount, const char filePath[])
   }
   fclose(filePointer);
 
-  *amount = index;
-  return true;
+  return index;
 }
 
 static bool extract_file_lines(char** fileLines, int* amount, FILE* filePointer)

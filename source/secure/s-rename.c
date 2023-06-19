@@ -1,4 +1,4 @@
-#include "../engine.h"
+#include "../secure.h"
 
 bool matrix_index_filter(float** result, float** matrix, int height, int width, const int indexes[], int amount)
 {
@@ -17,7 +17,6 @@ bool matrix_index_filter(float** result, float** matrix, int height, int width, 
   }
   return true;
 }
-
 
 bool matrix_column_vector(float* vector, float** matrix, int height, int width, int column)
 {

@@ -1,5 +1,15 @@
-#ifndef VECTOR_MATRIX_HANDLER_H
-#define VECTOR_MATRIX_HANDLER_H
+#ifndef SECURE_H
+#define SECURE_H
+
+#include <math.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <time.h>
+#include <stdint.h>
 
 extern bool matrix_index_filter(float** result, float** matrix, int height, int width, const int indexes[], int amount);
 

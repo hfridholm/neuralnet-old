@@ -1,60 +1,36 @@
-#include "../engine.h"
+ #include "../persue.h"
 
-float sigmoid_activ_value(float floatValue)
+static float sigmoid_activ_value(float floatValue)
 {
   return (1 / (1 + exp(-floatValue)) );
 }
 
-float sigmoid_deriv_value(float sigmValue)
+static float sigmoid_deriv_value(float sigmValue)
 {
   return (sigmValue * (1 - sigmValue));
 }
 
-float relu_activ_value(float floatValue)
+static float relu_activ_value(float floatValue)
 {
   return (floatValue > 0) ? floatValue : 0;
 }
 
-float relu_deriv_value(float reluValue)
+static float relu_deriv_value(float reluValue)
 {
   return (reluValue > 0) ? 1 : 0;
 }
 
-float tanh_activ_value(float floatValue)
+static float tanh_activ_value(float floatValue)
 {
   return (exp(2 * floatValue) - 1) / (exp(2 * floatValue) + 1);
 }
 
-float tanh_deriv_value(float tanhValue)
+static float tanh_deriv_value(float tanhValue)
 {
   return (1 - tanhValue * tanhValue);
 }
 
-float* cross_entropy_derivs(float* derivs, float* nodes, float* targets, int amount)
-{
-  if(derivs == NULL || nodes == NULL || targets == NULL) return NULL;
- 
-  for(int index = 0; index < amount; index += 1)
-  {
-    derivs[index] = 2 * (nodes[index] - targets[index]);
-  }
-  return derivs;
-}
-
-float cross_entropy_cost(float* nodes, float* targets, int amount)
-{
-  if(nodes == NULL || targets == NULL) return -1.0f;
-
-  float costValue = 0.0f;
-
-  for(int index = 0; index < amount; index += 1)
-  {
-    costValue += pow(nodes[index] - targets[index], 2);
-  }
-  return costValue / (float) amount;
-}
-
-float* softmax_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* softmax_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
@@ -71,7 +47,7 @@ float* softmax_activ_values(float* activValues, float* layerValues, int layerWid
   return activValues;
 }
 
-float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
@@ -82,7 +58,7 @@ float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWid
   return activValues;
 }
 
-float* relu_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* relu_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
@@ -93,7 +69,7 @@ float* relu_activ_values(float* activValues, float* layerValues, int layerWidth)
   return activValues;
 }
 
-float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
@@ -104,7 +80,7 @@ float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth)
   return activValues;
 }
 
-float** softmax_deriv_values(float** layerDerivs, float* layerValues, int layerWidth)
+static float** softmax_deriv_values(float** layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
@@ -120,7 +96,7 @@ float** softmax_deriv_values(float** layerDerivs, float* layerValues, int layerW
   return layerDerivs;
 }
 
-float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWidth)
+static float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
  
@@ -135,7 +111,7 @@ float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWid
   return layerDerivs;
 }
 
-float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWidth)
+static float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
@@ -153,7 +129,7 @@ float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWid
   return layerDerivs;
 }
 
-float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth)
+static float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
@@ -171,7 +147,7 @@ float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth)
   return layerDerivs;
 }
 
-float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth)
+static float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
@@ -219,4 +195,28 @@ void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, 
 
     case ACTIV_SOFTMAX: apply_softmax_derivs(layerDerivs, layerValues, layerWidth); break;
   }
+}
+
+float* cross_entropy_derivs(float* derivs, float* nodes, float* targets, int amount)
+{
+  if(derivs == NULL || nodes == NULL || targets == NULL) return NULL;
+ 
+  for(int index = 0; index < amount; index += 1)
+  {
+    derivs[index] = 2 * (nodes[index] - targets[index]);
+  }
+  return derivs;
+}
+
+float cross_entropy_cost(float* nodes, float* targets, int amount)
+{
+  if(nodes == NULL || targets == NULL) return -1.0f;
+
+  float costValue = 0.0f;
+
+  for(int index = 0; index < amount; index += 1)
+  {
+    costValue += pow(nodes[index] - targets[index], 2);
+  }
+  return costValue / (float) amount;
 }

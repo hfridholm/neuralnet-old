@@ -1,5 +1,12 @@
-#ifndef ARRAY_STRING_HANDLER_H
-#define ARRAY_STRING_HANDLER_H
+#ifndef ADJUST_H
+#define ADJUST_H
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <ctype.h>
 
 extern char* create_char_string(int length);
 
@@ -82,4 +89,3 @@ extern bool strmat_index_filter(char*** result, char*** strmat, int height, int 
 extern bool strmat_column_strarr(char** strarr, char*** strmat, int height, int width, int length, int column);
 
 #endif
-

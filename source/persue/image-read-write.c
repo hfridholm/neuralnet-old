@@ -1,4 +1,27 @@
-#include "../image.h"
+#include "../persue.h"
+
+bool write_nrmarr_pixels(const char filePath[], float* nrmarr, int width, int height)
+{
+  uint8_t* pixels = malloc(sizeof(uint8_t) * width * height);
+ 
+  for(int index = 0; index < (width * height); index += 1)
+  {
+    pixels[index] = (uint8_t) (nrmarr[index] * 255); 
+  }
+
+  if(!stbi_write_png(filePath, width, height, 1, pixels, width * sizeof(uint8_t)))
+  {
+    printf("Error: stbi_write_png\n");
+  
+    free(pixels);
+
+    return false;
+  }
+  
+  free(pixels);
+
+  return true;
+}
 
 float* pixels_nrmliz_vector(int* imgWidth, int* imgHeight, const char filePath[])
 {
@@ -89,27 +112,4 @@ bool write_nrmmat_pixels(const char filePath[], float** nrmmat, int width, int h
   free_float_vector(&nrmarr, width * height);
 
   return result;
-}
-
-bool write_nrmarr_pixels(const char filePath[], float* nrmarr, int width, int height)
-{
-  uint8_t* pixels = malloc(sizeof(uint8_t) * width * height);
- 
-  for(int index = 0; index < (width * height); index += 1)
-  {
-    pixels[index] = (uint8_t) (nrmarr[index] * 255); 
-  }
-
-  if(!stbi_write_png(filePath, width, height, 1, pixels, width * sizeof(uint8_t)))
-  {
-    printf("Error: stbi_write_png\n");
-  
-    free(pixels);
-
-    return false;
-  }
-  
-  free(pixels);
-
-  return true;
 }

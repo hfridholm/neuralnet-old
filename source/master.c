@@ -1,9 +1,13 @@
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "adjust.h"
+#include "persue.h"
+#include "secure.h"
+#include "review.h"
 
-#include "../engine/engine.h"
-#include "../dataset/dataset.h"
-#include "../image/image.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 char* extract_shift_args(int* argc, char*** argv)
 {
