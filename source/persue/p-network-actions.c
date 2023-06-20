@@ -1,4 +1,5 @@
 #include "../persue.h"
+#include "p-activs-intern.h"
 
 int maximum_layer_shape(const int networkSizes[], int networkLayers)
 {
@@ -13,7 +14,7 @@ int maximum_layer_shape(const int networkSizes[], int networkLayers)
   return maxShape;
 }
 
-void addit_oldwei_deltas(float*** weightDeltas, int networkLayers, int maxShape, float momentum, float*** oldWeightDeltas)
+static void addit_oldwei_deltas(float*** weightDeltas, int networkLayers, int maxShape, float momentum, float*** oldWeightDeltas)
 {
   float*** tempWeightDeltas = create_fmatrix_array(networkLayers - 1, maxShape, maxShape);
 
@@ -24,7 +25,7 @@ void addit_oldwei_deltas(float*** weightDeltas, int networkLayers, int maxShape,
   free_fmatrix_array(&tempWeightDeltas, networkLayers - 1, maxShape, maxShape);
 }
 
-void addit_oldbia_deltas(float** biasDeltas, int networkLayers, int maxShape, float momentum, float** oldBiasDeltas)
+static void addit_oldbia_deltas(float** biasDeltas, int networkLayers, int maxShape, float momentum, float** oldBiasDeltas)
 {
   float** tempBiasDeltas = create_float_matrix(networkLayers - 1, maxShape);
 
@@ -35,7 +36,7 @@ void addit_oldbia_deltas(float** biasDeltas, int networkLayers, int maxShape, fl
   free_float_matrix(&tempBiasDeltas, networkLayers - 1, maxShape);
 }
 
-bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int networkLayers, int maxShape, float learnRate, float momentum, float*** weightDerivs, float** biasDerivs, float*** oldWeightDeltas, float** oldBiasDeltas)
+static bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int networkLayers, int maxShape, float learnRate, float momentum, float*** weightDerivs, float** biasDerivs, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   multi_scale_fmatarr(weightDeltas, weightDerivs, networkLayers - 1, maxShape, maxShape, -learnRate);
 
@@ -54,7 +55,7 @@ bool create_weibia_deltas(float*** weightDeltas, float** biasDeltas, int network
   return true;
 }
 
-bool create_node_derivs(float** nodeDerivs, Network network, float** nodeValues, float* targets)
+static bool create_node_derivs(float** nodeDerivs, Network network, float** nodeValues, float* targets)
 {
   cross_entropy_derivs(nodeDerivs[network.layers - 2], nodeValues[network.layers - 1], targets, network.sizes[network.layers - 1]);
 
@@ -78,7 +79,7 @@ bool create_node_derivs(float** nodeDerivs, Network network, float** nodeValues,
   return true;
 }
 
-bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, Network network, float** nodeValues, float* targets)
+static bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, Network network, float** nodeValues, float* targets)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
 
@@ -101,7 +102,7 @@ bool create_weibia_derivs(float*** weightDerivs, float** biasDerivs, Network net
   return true;
 }
 
-bool create_node_values(float** nodeValues, Network network, float* inputs)
+static bool create_node_values(float** nodeValues, Network network, float* inputs)
 {
   copy_float_vector(nodeValues[0], inputs, network.sizes[0]);
 
@@ -119,7 +120,7 @@ bool create_node_values(float** nodeValues, Network network, float* inputs)
   return true;
 }
 
-void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, Network network, float* inputs, float* targets)
+static void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, Network network, float* inputs, float* targets)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
 
@@ -132,7 +133,7 @@ void frwrd_create_derivs(float*** weightDerivs, float** biasDerivs, Network netw
   free_float_matrix(&nodeValues, network.layers, maxShape);
 }
 
-void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
+static void stcast_weibia_deltas(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float* inputs, float* targets, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
 
@@ -162,7 +163,8 @@ bool train_network_stcast(float*** weightDeltas, float** biasDeltas, Network net
 
 // Tip: store mean weight/bias derivs in temp variables before asigning pointers
 // Tip: Check pointer arguments before assigning
-void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, Network network, float** inputs, float** targets, int batchSize)
+/*
+static void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, Network network, float** inputs, float** targets, int batchSize)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
 
@@ -183,8 +185,10 @@ void mean_weibia_derivs(float*** meanWeightDerivs, float** meanBiasDerivs, Netwo
   multi_scale_fmatarr(meanWeightDerivs, meanWeightDerivs, network.layers - 1, maxShape, maxShape, 1.0f / batchSize);
   multi_scale_fmatrix(meanBiasDerivs, meanBiasDerivs, network.layers - 1, maxShape, 1.0f / batchSize);
 }
+*/
 
-void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
+/*
+static void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
 
@@ -198,9 +202,11 @@ void minbat_weibia_deltas(float*** weightDeltas, float** biasDeltas, Network net
   free_fmatrix_array(&meanWeightDerivs, network.layers - 1, maxShape, maxShape);
   free_float_matrix(&meanBiasDerivs, network.layers - 1, maxShape);
 }
+*/
 
 // Tip: Check pointer arguments before assigning
-bool train_network_minbat(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
+/*
+static bool train_network_minbat(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
 
@@ -211,6 +217,7 @@ bool train_network_minbat(float*** weightDeltas, float** biasDeltas, Network net
 
   return true;
 }
+*/
 
 // Tip: Check pointer arguments before assigning
 bool frwrd_network_inputs(float* outputs, Network network, float* inputs)
@@ -228,7 +235,7 @@ bool frwrd_network_inputs(float* outputs, Network network, float* inputs)
   return true;
 }
 
-void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
+static void train_epoch_stcast(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = maximum_layer_shape(network.sizes, network.layers);
 

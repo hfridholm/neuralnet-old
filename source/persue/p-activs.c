@@ -178,6 +178,8 @@ void layer_activ_values(float* activValues, float* layerValues, int layerWidth, 
     case ACTIV_TANH: tanh_activ_values(activValues, layerValues, layerWidth); break;
 
     case ACTIV_SOFTMAX: softmax_activ_values(activValues, layerValues, layerWidth); break;
+
+    default: return;
   }
 }
 
@@ -194,6 +196,8 @@ void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, 
     case ACTIV_TANH: apply_tanh_derivs(layerDerivs, layerValues, layerWidth); break;
 
     case ACTIV_SOFTMAX: apply_softmax_derivs(layerDerivs, layerValues, layerWidth); break;
+
+    default: return;
   }
 }
 

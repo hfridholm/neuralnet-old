@@ -31,13 +31,7 @@ typedef struct
 
 extern int maximum_layer_shape(const int networkSizes[], int networkLayers);
 
-extern float* cross_entropy_derivs(float* derivs, float* nodes, float* targets, int amount);
-
 extern float cross_entropy_cost(float* nodes, float* targets, int amount);
-
-extern void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, Activ layerActiv);
-
-extern void layer_activ_values(float* activValues, float* layerValues, int layerWidth, Activ layerActiv);
 
 
 extern bool frwrd_network_inputs(float* outputs, Network network, float* inputs);
