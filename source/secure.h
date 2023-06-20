@@ -13,104 +13,100 @@
 
 // Float Vector
 
-extern float create_random_float(float minimum, float maximum);
+extern float float_random_create(float minimum, float maximum);
 
-extern float* create_float_vector(int length);
+extern float* float_vector_create(int length);
 
-extern bool float_vector_minmax(float* minValue, float* maxValue, float* vector, int length);
+extern bool float_vector_minmax(float* minimum, float* maximum, float* vector, int length);
 
-extern void free_float_vector(float** vector, int length);
+extern void float_vector_free(float** vector, int length);
 
-extern float* fill_fvector_random(float* vector, int length, float minimum, float maximum);
+extern float* float_vector_random_fill(float* vector, int length, float minimum, float maximum);
 
-extern float* multi_scale_fvector(float* result, float* vector, int length, float scalor);
+extern float* float_vector_scale_multi(float* result, float* vector, int length, float scalor);
 
-extern float* multi_elem_fvector(float* result, float* vector1, float* vector2, int length);
+extern float* float_vector_elem_multi(float* result, float* vector1, float* vector2, int length);
 
-extern float* addit_elem_fvector(float* result, float* vector1, float* vector2, int length);
+extern float* float_vector_elem_addit(float* result, float* vector1, float* vector2, int length);
 
-extern float** dotprod_float_vector(float** result, float* vector1, int length1, float* vector2, int length2);
+extern float** float_vector_dotprod(float** result, float* vector1, int length1, float* vector2, int length2);
 
-extern float* fvector_elem_action(float* result, float* vector, int length, float (*float_action_funct)(float));
+extern float* float_vector_copy(float* destin, float* vector, int length);
 
-extern float* copy_float_vector(float* destin, float* vector, int length);
+extern float* float_vector_duplic(float* vector, int length);
 
-extern float* duplic_float_vector(float* vector, int length);
-
-extern float vector_maximum_float(float* vector, int length);
+extern float float_vector_maximum(float* vector, int length);
 
 extern float float_vector_total(float* vector, int length);
 
-extern bool print_float_vector(float* vector, int length);
+extern bool float_vector_print(float* vector, int length);
 
 // Float Matrix
 
-extern bool matrix_index_filter(float** result, float** matrix, int height, int width, const int indexes[], int amount);
+extern bool float_matrix_filter_index(float** result, float** matrix, int height, int width, const int indexes[], int amount);
 
-extern bool matrix_column_vector(float* vector, float** matrix, int height, int width, int column);
+extern bool float_matrix_column_vector(float* vector, float** matrix, int height, int width, int column);
 
-extern float** create_float_matrix(int height, int width);
+extern float** float_matrix_create(int height, int width);
 
-extern void free_float_matrix(float*** matrix, int height, int width);
+extern void float_matrix_free(float*** matrix, int height, int width);
 
-extern float** create_random_fmatrix(int height, int width, float minimum, float maximum);
+extern float** float_matrix_random_create(int height, int width, float minimum, float maximum);
 
-extern float** fill_fmatrix_random(float** matrix, int height, int width, float minimum, float maximum);
+extern float** float_matrix_random_fill(float** matrix, int height, int width, float minimum, float maximum);
 
-extern float** transp_float_matrix(float** transp, float** matrix, int height, int width);
+extern float** float_matrix_transp(float** transp, float** matrix, int height, int width);
 
-extern float** multi_scale_fmatrix(float** result, float** matrix, int height, int width, float scalor);
+extern float** float_matrix_scale_multi(float** result, float** matrix, int height, int width, float scalor);
 
-extern float** addit_scale_fmatrix(float** result, float** matrix, int height, int width, float scalor);
+extern float** float_matrix_scale_addit(float** result, float** matrix, int height, int width, float scalor);
 
-extern float** multi_elem_fmatrix(float** result, float** matrix1, float** matrix2, int height, int width);
+extern float** float_matrix_elem_multi(float** result, float** matrix1, float** matrix2, int height, int width);
 
-extern float** addit_elem_fmatrix(float** result, float** matrix1, float** matrix2, int height, int width);
+extern float** float_matrix_elem_addit(float** result, float** matrix1, float** matrix2, int height, int width);
 
-extern float** addit_fmatrix_vector(float** result, float** matrix, float* vector, int height, int width);
+extern float** float_matrix_vector_addit(float** result, float** matrix, float* vector, int height, int width);
 
-extern bool dotprod_float_matrix(float** result, float** matrix1, int height1, int width1, float** matrix2, int height2, int width2);
+extern bool float_matrix_dotprod(float** result, float** matrix1, int height1, int width1, float** matrix2, int height2, int width2);
 
-extern bool dotprod_fmatrix_vector(float* result, float** matrix, int height, int width, float* vector, int length);
+extern bool float_matrix_vector_dotprod(float* result, float** matrix, int height, int width, float* vector, int length);
 
-extern float** cnvrt_fvector_fmatrix(float** matrix, float* vector, int length);
+extern float** float_vector_cnvrt_matrix(float** matrix, float* vector, int length);
 
-extern float** cnvrt_fmatrix_fvector(float* vector, float** matrix, int height, int width);
+extern float** float_matrix_cnvrt_vector(float* vector, float** matrix, int height, int width);
 
-extern float** fmatrix_elem_action(float** result, float** matrix, int height, int width, float (*float_action_funct)(float));
+extern float** float_matrix_copy(float** destin, float** matrix, int height, int width);
 
-extern float** copy_float_matrix(float** destin, float** matrix, int height, int width);
+extern float** float_matrix_duplic(float** matrix, int height, int width);
 
-extern float** duplic_float_matrix(float** matrix, int height, int width);
-
-extern bool print_float_matrix(float** matrix, int height, int width);
+extern bool float_matrix_print(float** matrix, int height, int width);
 
 // Float Matarr
 
-extern float*** create_fmatrix_array(int amount, int height, int width);
+extern float*** float_matarr_create(int amount, int height, int width);
 
-extern void free_fmatrix_array(float**** matarr, int amount, int height, int width);
+extern void float_matarr_free(float**** matarr, int amount, int height, int width);
 
-extern float*** create_random_fmatarr(int amount, int height, int width, float minimum, float maximum);
+extern float*** float_matarr_random_create(int amount, int height, int width, float minimum, float maximum);
 
-extern float*** fill_fmatarr_random(float*** matarr, int amount, int height, int width, float minimum, float maximum);
+extern float*** float_matarr_random_fill(float*** matarr, int amount, int height, int width, float minimum, float maximum);
 
-extern float*** multi_scale_fmatarr(float*** result, float*** matarr, int amount, int height, int width, float scalor);
+extern float*** float_matarr_scale_multi(float*** result, float*** matarr, int amount, int height, int width, float scalor);
 
-extern float*** addit_elem_fmatarr(float*** result, float*** matarr1, float*** matarr2, int amount, int height, int width);
+extern float*** float_matarr_elem_addit(float*** result, float*** matarr1, float*** matarr2, int amount, int height, int width);
 
-extern float*** copy_fmatrix_array(float*** destin, float*** matarr, int amount, int height, int width);
+extern float*** float_matarr_copy(float*** destin, float*** matarr, int amount, int height, int width);
 
-extern bool print_fmatrix_array(float*** matarr, int amount, int height, int width);
+extern bool float_matarr_print(float*** matarr, int amount, int height, int width);
 
 // Index Array
 
-extern int* create_integ_array(int length);
+extern int index_random_create(int minimum, int maximum);
 
-extern void free_integ_array(int** array, int length);
+extern int* index_array_create(int amount);
 
-extern int* random_indexes_array(int* array, int length);
+extern void index_array_free(int** array, int amount);
 
-extern int* shuffle_integ_array(int* array, int length);
+extern int* index_array_shuffle(int* array, int amount);
 
 #endif

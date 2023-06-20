@@ -28,7 +28,7 @@ bool nrmliz_strmat_header(char*** result, char*** strmat, int height, int width,
 
   strmat_column_strarr(strarr, strmat, height, width, length, headerIndex);
 
-  float* vector = create_float_vector(height - 1);
+  float* vector = float_vector_create(height - 1);
 
   strarr_float_vector(vector, strarr + 1, height - 1);
 
@@ -45,7 +45,7 @@ bool nrmliz_strmat_header(char*** result, char*** strmat, int height, int width,
   float_vector_strarr(strarr + 1, vector, height - 1);
 
   
-  free_float_vector(&vector, height - 1);
+  float_vector_free(&vector, height - 1);
 
 
   alloc_strmat_column(result, strmat, height, width, length, strarr, length, headerIndex);
@@ -221,22 +221,22 @@ static bool csv_headers_inptrgs_t(float** inputs, float** targets, int* height, 
 
   if(!strarr_strarr_indexes(inputIndexis, tokens[0], tWidth, inputHeaders, inputAmount))
   {
-    free_integ_array(&inputIndexis, inputAmount);
-    free_integ_array(&targetIndexis, targetAmount);
+    index_array_free(&inputIndexis, inputAmount);
+    index_array_free(&targetIndexis, targetAmount);
     return false;
   }
 
   if(!strarr_strarr_indexes(targetIndexis, tokens[0], tWidth, targetHeaders, targetAmount))
   {
-    free_integ_array(&inputIndexis, inputAmount);
-    free_integ_array(&targetIndexis, targetAmount);
+    index_array_free(&inputIndexis, inputAmount);
+    index_array_free(&targetIndexis, targetAmount);
     return false;
   }
 
   bool result = tokens_inpts_trgts(inputs, targets, tokens + 1, tHeight - 1, tWidth, tLength, inputIndexis, inputAmount, targetIndexis, targetAmount);
 
-  free_integ_array(&inputIndexis, inputAmount);
-  free_integ_array(&targetIndexis, targetAmount);
+  index_array_free(&inputIndexis, inputAmount);
+  index_array_free(&targetIndexis, targetAmount);
 
   return result;
 }

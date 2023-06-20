@@ -1,43 +1,34 @@
 #include "../secure.h"
 
-int create_random_integ(int minimum, int maximum)
+int index_random_create(int minimum, int maximum)
 {
   float fraction = ((float) rand() / (float) RAND_MAX);
 
   return (fraction * (maximum - minimum) + minimum);
 }
 
-int* create_integ_array(int length)
+int* index_array_create(int amount)
 {
-  if(length < 0) return NULL;
+  if(amount < 0) return NULL;
 
-  int* array = malloc(sizeof(int) * length);
+  int* array = malloc(sizeof(int) * amount);
 
   if(array == NULL) return NULL;
 
-  memset(array, 0, sizeof(int) * length);
-
+  for(int index = 0; index < amount; index += 1)
+  {
+    array[index] = index;
+  }
   return array;
 }
 
-void free_integ_array(int** array, int length)
+void index_array_free(int** array, int amount)
 {
   free(*array);
   *array = NULL;
 }
 
-int* random_indexes_array(int* array, int length)
-{
-  if(array == NULL) return NULL;
-
-  for(int index = 0; index < length; index += 1)
-  {
-    array[index] = index;
-  }
-  return shuffle_integ_array(array, length);
-}
-
-static int* switch_array_ints(int* array, int index1, int index2)
+static int* index_array_switch_index(int* array, int index1, int index2)
 {
   int temp = array[index1];
   array[index1] = array[index2];
@@ -46,15 +37,15 @@ static int* switch_array_ints(int* array, int index1, int index2)
   return array; 
 }
 
-int* shuffle_integ_array(int* array, int length)
+int* index_array_shuffle(int* array, int amount)
 {
   if(array == NULL) return NULL;
 
-  for(int index = 0; index < length; index += 1)
+  for(int index = 0; index < amount; index += 1)
   {
-    int randIndex = create_random_integ(0, length - 1);
+    int randIndex = index_random_create(0, amount - 1);
 
-    switch_array_ints(array, index, randIndex);
+    index_array_switch_index(array, index, randIndex);
   }
   return array;
 }

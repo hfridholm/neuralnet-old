@@ -100,13 +100,13 @@ static float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int l
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
  
-  float** activDerivs = create_float_matrix(layerWidth, layerWidth);
+  float** activDerivs = float_matrix_create(layerWidth, layerWidth);
 
   softmax_deriv_values(activDerivs, layerValues, layerWidth);
 
-  dotprod_fmatrix_vector(layerDerivs, activDerivs, layerWidth, layerWidth, layerValues, layerWidth);
+  float_matrix_vector_dotprod(layerDerivs, activDerivs, layerWidth, layerWidth, layerValues, layerWidth);
 
-  free_float_matrix(&activDerivs, layerWidth, layerWidth);
+  float_matrix_free(&activDerivs, layerWidth, layerWidth);
 
   return layerDerivs;
 }
@@ -115,16 +115,16 @@ static float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int l
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
-  float* activDerivs = create_float_vector(layerWidth);
+  float* activDerivs = float_vector_create(layerWidth);
 
   for(int index = 0; index < layerWidth; index += 1)
   {
     activDerivs[index] = sigmoid_deriv_value(layerValues[index]);
   }
 
-  multi_elem_fvector(layerDerivs, layerDerivs, activDerivs, layerWidth);
+  float_vector_elem_multi(layerDerivs, layerDerivs, activDerivs, layerWidth);
 
-  free_float_vector(&activDerivs, layerWidth);
+  float_vector_free(&activDerivs, layerWidth);
 
   return layerDerivs;
 }
@@ -133,16 +133,16 @@ static float* apply_relu_derivs(float* layerDerivs, float* layerValues, int laye
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
-  float* activDerivs = create_float_vector(layerWidth);
+  float* activDerivs = float_vector_create(layerWidth);
 
   for(int index = 0; index < layerWidth; index += 1)
   {
     activDerivs[index] = relu_deriv_value(layerValues[index]);
   }
 
-  multi_elem_fvector(layerDerivs, layerDerivs, activDerivs, layerWidth);
+  float_vector_elem_multi(layerDerivs, layerDerivs, activDerivs, layerWidth);
 
-  free_float_vector(&activDerivs, layerWidth);
+  float_vector_free(&activDerivs, layerWidth);
 
   return layerDerivs;
 }
@@ -151,16 +151,16 @@ static float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int laye
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
-  float* activDerivs = create_float_vector(layerWidth);
+  float* activDerivs = float_vector_create(layerWidth);
 
   for(int index = 0; index < layerWidth; index += 1)
   {
     activDerivs[index] = tanh_deriv_value(layerValues[index]);
   }
 
-  multi_elem_fvector(layerDerivs, layerDerivs, activDerivs, layerWidth);
+  float_vector_elem_multi(layerDerivs, layerDerivs, activDerivs, layerWidth);
 
-  free_float_vector(&activDerivs, layerWidth);
+  float_vector_free(&activDerivs, layerWidth);
 
   return layerDerivs;
 }

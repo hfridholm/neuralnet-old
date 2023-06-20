@@ -45,7 +45,7 @@ float* pixels_nrmliz_vector(int* imgWidth, int* imgHeight, const char filePath[]
   
   int length = (tempWidth * tempHeight);
 
-  float* vector = create_float_vector(length);
+  float* vector = float_vector_create(length);
 
   for(int index = 0; index < length; index += 1)
   {
@@ -81,7 +81,7 @@ float** pixels_nrmliz_matrix(int* imgWidth, int* imgHeight, const char filePath[
   int matHeight = tempWidth * tempHeight;
   int matWidth = 3;
 
-  float** matrix = create_float_matrix(matHeight, matWidth);
+  float** matrix = float_matrix_create(matHeight, matWidth);
 
 
   for(int yValue = 0; yValue < tempHeight; yValue += 1)
@@ -103,13 +103,13 @@ float** pixels_nrmliz_matrix(int* imgWidth, int* imgHeight, const char filePath[
 
 bool write_nrmmat_pixels(const char filePath[], float** nrmmat, int width, int height)
 {
-  float* nrmarr = create_float_vector(width * height);
+  float* nrmarr = float_vector_create(width * height);
 
-  matrix_column_vector(nrmarr, nrmmat, width * height, 3, 2);
+  float_matrix_column_vector(nrmarr, nrmmat, width * height, 3, 2);
 
   bool result = write_nrmarr_pixels(filePath, nrmarr, width, height);
 
-  free_float_vector(&nrmarr, width * height);
+  float_vector_free(&nrmarr, width * height);
 
   return result;
 }

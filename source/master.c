@@ -45,11 +45,11 @@ int main(int argc, char* argv[])
   }
 
 
-  float** inputs = create_float_matrix(imgWidth * imgHeight, 2);
-  float** targets = create_float_matrix(imgWidth * imgHeight, 1);
+  float** inputs = float_matrix_create(imgWidth * imgHeight, 2);
+  float** targets = float_matrix_create(imgWidth * imgHeight, 1);
 
-  matrix_index_filter(inputs, matrix, imgWidth * imgHeight, 3, (int[]) {0, 1}, 2);
-  matrix_index_filter(targets, matrix, imgWidth * imgHeight, 3, (int[]) {2}, 1);
+  float_matrix_filter_index(inputs, matrix, imgWidth * imgHeight, 3, (int[]) {0, 1}, 2);
+  float_matrix_filter_index(targets, matrix, imgWidth * imgHeight, 3, (int[]) {2}, 1);
 
 
 
@@ -59,8 +59,8 @@ int main(int argc, char* argv[])
 
   int maxShape = maximum_layer_shape(sizes, layers);
 
-  float*** weights = create_random_fmatarr(layers - 1, maxShape, maxShape, -1.0f, +1.0f);
-  float** biases = create_random_fmatrix(layers - 1, maxShape, -1.0f, +1.0f);
+  float*** weights = float_matarr_random_create(layers - 1, maxShape, maxShape, -1.0f, +1.0f);
+  float** biases = float_matrix_random_create(layers - 1, maxShape, -1.0f, +1.0f);
 
   Network network = {layers, sizes, activs, weights, biases};
 
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
   int outWidth = 256;
   int outHeight = 256;
 
-  float* outPixels = create_float_vector(outWidth * outHeight);
+  float* outPixels = float_vector_create(outWidth * outHeight);
 
 
   for(int yValue = 0; yValue < outHeight; yValue += 1)
@@ -100,22 +100,22 @@ int main(int argc, char* argv[])
   }
 
 
-  write_nrmarr_pixels("../source/assets/result101.png", outPixels, outWidth, outHeight);
+  write_nrmarr_pixels("../assets/result101.png", outPixels, outWidth, outHeight);
 
-  free_float_vector(&outPixels, outWidth * outHeight);
-
-
+  float_vector_free(&outPixels, outWidth * outHeight);
 
 
-  free_fmatrix_array(&network.weights, network.layers - 1, maxShape, maxShape);
-  free_float_matrix(&network.biases, network.layers - 1, maxShape);
 
 
-  free_float_matrix(&inputs, imgWidth * imgHeight, 2);
-  free_float_matrix(&targets, imgWidth * imgHeight, 1);
+  float_matarr_free(&network.weights, network.layers - 1, maxShape, maxShape);
+  float_matrix_free(&network.biases, network.layers - 1, maxShape);
 
 
-  free_float_matrix(&matrix, imgWidth * imgHeight, 3);
+  float_matrix_free(&inputs, imgWidth * imgHeight, 2);
+  float_matrix_free(&targets, imgWidth * imgHeight, 1);
+
+
+  float_matrix_free(&matrix, imgWidth * imgHeight, 3);
   
   return 0;
 }
