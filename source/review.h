@@ -11,8 +11,8 @@
 #include <time.h>
 #include <stdint.h>
 
-extern int count_file_lines(const char filePath[]);
+extern int fpath_lines_amount(const char filePath[]);
 
-extern bool extract_text_file(char** fileLines, int* amount, const char filePath[]);
+extern bool fpath_lines_read(char** fileLines, int* amount, const char filePath[]);
 
 #endif

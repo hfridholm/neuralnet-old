@@ -1,36 +1,36 @@
  #include "../persue.h"
 
-static float sigmoid_activ_value(float floatValue)
+static float sigmoid_value(float floatValue)
 {
   return (1 / (1 + exp(-floatValue)) );
 }
 
-static float sigmoid_deriv_value(float sigmValue)
+static float sigmoid_deriv(float sigmValue)
 {
   return (sigmValue * (1 - sigmValue));
 }
 
-static float relu_activ_value(float floatValue)
+static float relu_value(float floatValue)
 {
   return (floatValue > 0) ? floatValue : 0;
 }
 
-static float relu_deriv_value(float reluValue)
+static float relu_deriv(float reluValue)
 {
   return (reluValue > 0) ? 1 : 0;
 }
 
-static float tanh_activ_value(float floatValue)
+static float tanh_value(float floatValue)
 {
   return (exp(2 * floatValue) - 1) / (exp(2 * floatValue) + 1);
 }
 
-static float tanh_deriv_value(float tanhValue)
+static float tanh_deriv(float tanhValue)
 {
   return (1 - tanhValue * tanhValue);
 }
 
-static float* softmax_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* softmax_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
@@ -47,40 +47,40 @@ static float* softmax_activ_values(float* activValues, float* layerValues, int l
   return activValues;
 }
 
-static float* sigmoid_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* sigmoid_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
   for(int index = 0; index < layerWidth; index += 1)
   {
-    activValues[index] = sigmoid_activ_value(layerValues[index]);
+    activValues[index] = sigmoid_value(layerValues[index]);
   }
   return activValues;
 }
 
-static float* relu_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* relu_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
   for(int index = 0; index < layerWidth; index += 1)
   {
-    activValues[index] = relu_activ_value(layerValues[index]);
+    activValues[index] = relu_value(layerValues[index]);
   }
   return activValues;
 }
 
-static float* tanh_activ_values(float* activValues, float* layerValues, int layerWidth)
+static float* tanh_values(float* activValues, float* layerValues, int layerWidth)
 {
   if(activValues == NULL || layerValues == NULL) return NULL;
 
   for(int index = 0; index < layerWidth; index += 1)
   {
-    activValues[index] = tanh_activ_value(layerValues[index]);
+    activValues[index] = tanh_value(layerValues[index]);
   }
   return activValues;
 }
 
-static float** softmax_deriv_values(float** layerDerivs, float* layerValues, int layerWidth)
+static float** softmax_derivs(float** layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
@@ -96,13 +96,13 @@ static float** softmax_deriv_values(float** layerDerivs, float* layerValues, int
   return layerDerivs;
 }
 
-static float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int layerWidth)
+static float* softmax_derivs_apply(float* layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
  
   float** activDerivs = float_matrix_create(layerWidth, layerWidth);
 
-  softmax_deriv_values(activDerivs, layerValues, layerWidth);
+  softmax_derivs(activDerivs, layerValues, layerWidth);
 
   float_matrix_vector_dotprod(layerDerivs, activDerivs, layerWidth, layerWidth, layerValues, layerWidth);
 
@@ -111,7 +111,7 @@ static float* apply_softmax_derivs(float* layerDerivs, float* layerValues, int l
   return layerDerivs;
 }
 
-static float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int layerWidth)
+static float* sigmoid_derivs_apply(float* layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
@@ -119,7 +119,26 @@ static float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int l
 
   for(int index = 0; index < layerWidth; index += 1)
   {
-    activDerivs[index] = sigmoid_deriv_value(layerValues[index]);
+    activDerivs[index] = sigmoid_deriv(layerValues[index]);
+  }
+
+  float_vector_elem_multi(layerDerivs, layerDerivs, activDerivs, layerWidth);
+  // Check if layerderivs is zero!
+
+  float_vector_free(&activDerivs, layerWidth);
+
+  return layerDerivs;
+}
+
+static float* relu_derivs_apply(float* layerDerivs, float* layerValues, int layerWidth)
+{
+  if(layerDerivs == NULL || layerValues == NULL) return NULL;
+
+  float* activDerivs = float_vector_create(layerWidth);
+
+  for(int index = 0; index < layerWidth; index += 1)
+  {
+    activDerivs[index] = relu_deriv(layerValues[index]);
   }
 
   float_vector_elem_multi(layerDerivs, layerDerivs, activDerivs, layerWidth);
@@ -129,7 +148,7 @@ static float* apply_sigmoid_derivs(float* layerDerivs, float* layerValues, int l
   return layerDerivs;
 }
 
-static float* apply_relu_derivs(float* layerDerivs, float* layerValues, int layerWidth)
+static float* tanh_derivs_apply(float* layerDerivs, float* layerValues, int layerWidth)
 {
   if(layerDerivs == NULL || layerValues == NULL) return NULL;
 
@@ -137,7 +156,7 @@ static float* apply_relu_derivs(float* layerDerivs, float* layerValues, int laye
 
   for(int index = 0; index < layerWidth; index += 1)
   {
-    activDerivs[index] = relu_deriv_value(layerValues[index]);
+    activDerivs[index] = tanh_deriv(layerValues[index]);
   }
 
   float_vector_elem_multi(layerDerivs, layerDerivs, activDerivs, layerWidth);
@@ -147,55 +166,37 @@ static float* apply_relu_derivs(float* layerDerivs, float* layerValues, int laye
   return layerDerivs;
 }
 
-static float* apply_tanh_derivs(float* layerDerivs, float* layerValues, int layerWidth)
-{
-  if(layerDerivs == NULL || layerValues == NULL) return NULL;
-
-  float* activDerivs = float_vector_create(layerWidth);
-
-  for(int index = 0; index < layerWidth; index += 1)
-  {
-    activDerivs[index] = tanh_deriv_value(layerValues[index]);
-  }
-
-  float_vector_elem_multi(layerDerivs, layerDerivs, activDerivs, layerWidth);
-
-  float_vector_free(&activDerivs, layerWidth);
-
-  return layerDerivs;
-}
-
-void layer_activ_values(float* activValues, float* layerValues, int layerWidth, Activ layerActiv)
+void activ_values(float* activValues, float* layerValues, int layerWidth, Activ layerActiv)
 {
   switch(layerActiv)
   {
     case ACTIV_NONE: return;
 
-    case ACTIV_SIGMOID: sigmoid_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_SIGMOID: sigmoid_values(activValues, layerValues, layerWidth); break;
 
-    case ACTIV_RELU: relu_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_RELU: relu_values(activValues, layerValues, layerWidth); break;
 
-    case ACTIV_TANH: tanh_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_TANH: tanh_values(activValues, layerValues, layerWidth); break;
 
-    case ACTIV_SOFTMAX: softmax_activ_values(activValues, layerValues, layerWidth); break;
+    case ACTIV_SOFTMAX: softmax_values(activValues, layerValues, layerWidth); break;
 
     default: return;
   }
 }
 
-void apply_activ_derivs(float* layerDerivs, float* layerValues, int layerWidth, Activ layerActiv)
+void activ_derivs_apply(float* layerDerivs, float* layerValues, int layerWidth, Activ layerActiv)
 {
   switch(layerActiv)
   {
     case ACTIV_NONE: return;
 
-    case ACTIV_SIGMOID: apply_sigmoid_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_SIGMOID: sigmoid_derivs_apply(layerDerivs, layerValues, layerWidth); break;
 
-    case ACTIV_RELU: apply_relu_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_RELU: relu_derivs_apply(layerDerivs, layerValues, layerWidth); break;
 
-    case ACTIV_TANH: apply_tanh_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_TANH: tanh_derivs_apply(layerDerivs, layerValues, layerWidth); break;
 
-    case ACTIV_SOFTMAX: apply_softmax_derivs(layerDerivs, layerValues, layerWidth); break;
+    case ACTIV_SOFTMAX: softmax_derivs_apply(layerDerivs, layerValues, layerWidth); break;
 
     default: return;
   }

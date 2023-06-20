@@ -1,6 +1,6 @@
 #include "../persue.h"
 
-bool write_nrmarr_pixels(const char filePath[], float* nrmarr, int width, int height)
+bool pixels_nrmliz_array_write(const char filePath[], float* nrmarr, int width, int height)
 {
   uint8_t* pixels = malloc(sizeof(uint8_t) * width * height);
  
@@ -23,7 +23,7 @@ bool write_nrmarr_pixels(const char filePath[], float* nrmarr, int width, int he
   return true;
 }
 
-float* pixels_nrmliz_vector(int* imgWidth, int* imgHeight, const char filePath[])
+float* pixels_nrmliz_array_read(int* imgWidth, int* imgHeight, const char filePath[])
 {
   int tempWidth, tempHeight, tempComp;
 
@@ -57,7 +57,7 @@ float* pixels_nrmliz_vector(int* imgWidth, int* imgHeight, const char filePath[]
   return vector;
 }
 
-float** pixels_nrmliz_matrix(int* imgWidth, int* imgHeight, const char filePath[])
+float** pixels_nrmliz_matrix_read(int* imgWidth, int* imgHeight, const char filePath[])
 {
   int tempWidth, tempHeight, tempComp;
 
@@ -101,13 +101,13 @@ float** pixels_nrmliz_matrix(int* imgWidth, int* imgHeight, const char filePath[
   return matrix;
 }
 
-bool write_nrmmat_pixels(const char filePath[], float** nrmmat, int width, int height)
+bool pixels_nrmliz_matrix_write(const char filePath[], float** nrmmat, int width, int height)
 {
   float* nrmarr = float_vector_create(width * height);
 
   float_matrix_column_vector(nrmarr, nrmmat, width * height, 3, 2);
 
-  bool result = write_nrmarr_pixels(filePath, nrmarr, width, height);
+  bool result = pixels_nrmliz_array_write(filePath, nrmarr, width, height);
 
   float_vector_free(&nrmarr, width * height);
 

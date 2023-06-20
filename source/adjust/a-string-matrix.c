@@ -1,6 +1,6 @@
 #include "../adjust.h"
 
-char*** create_string_matrix(int height, int width, int length)
+char*** strmat_create(int height, int width, int length)
 {
   if(height < 0 || width < 0 || length < 0) return NULL;
   
@@ -10,54 +10,54 @@ char*** create_string_matrix(int height, int width, int length)
 
   for(int index = 0; index < height; index += 1)
   {
-    strmat[index] = create_string_array(width, length);
+    strmat[index] = strarr_create(width, length);
   }
   return strmat;
 }
 
-void free_string_matrix(char**** strmat, int height, int width, int length)
+void strmat_free(char**** strmat, int height, int width, int length)
 {
   if(*strmat == NULL) return;
 
   for(int index = 0; index < height; index += 1)
   {
-    free_string_array((*strmat) + index, width, length);
+    strarr_free((*strmat) + index, width, length);
   }
   free(*strmat);
   *strmat = NULL;
 }
 
-char*** copy_string_matrix(char*** destin, char*** strmat, int height, int width, int length)
+char*** strmat_copy(char*** destin, char*** strmat, int height, int width, int length)
 {
   if(destin == NULL || strmat == NULL) return NULL;
 
   for(int index = 0; index < height; index += 1)
   {
-    copy_string_array(destin[index], strmat[index], width, length);
+    strarr_copy(destin[index], strmat[index], width, length);
   }
   return destin;
 }
 
-char*** duplic_string_matrix(char*** strmat, int height, int width, int length)
+char*** strmat_duplic(char*** strmat, int height, int width, int length)
 {
   if(strmat == NULL) return NULL;
 
-  char*** duplic = create_string_matrix(height, width, length);
+  char*** duplic = strmat_create(height, width, length);
 
-  return copy_string_matrix(duplic, strmat, height, width, length);
+  return strmat_copy(duplic, strmat, height, width, length);
 }
 
-bool alloc_strmat_column(char*** result, char*** strmat, int height, int width, int length1, char** strarr, int length2, int column)
+bool strmat_column_alloc(char*** result, char*** strmat, int height, int width, int length1, char** strarr, int length2, int column)
 {
   if(result == NULL || strmat == NULL) return false;
 
   if(column < 0 || column >= width) return false;
 
-  copy_string_matrix(result, strmat, height, width, length1);
+  strmat_copy(result, strmat, height, width, length1);
 
   for(int index = 0; index < height; index += 1)
   {
-    copy_char_string(result[index][column], strarr[index], length2);
+    string_copy(result[index][column], strarr[index], length2);
   }
   return true;
 }
@@ -84,24 +84,24 @@ bool strmat_float_matrix(float** matrix, char*** strmat, int height, int width)
   return true;
 }
 
-char*** merge_strmat_columns(char*** result, char*** strmat1, int height, int width1, int length1, char*** strmat2, int width2, int length2)
+char*** strmats_add_columns(char*** result, char*** strmat1, int height, int width1, int length1, char*** strmat2, int width2, int length2)
 {
   if(result == NULL || strmat1 == NULL || strmat2 == NULL) return NULL;
   for(int hIndex = 0; hIndex < height; hIndex += 1)
   {
     for(int wIndex = 0; wIndex < width1; wIndex += 1)
     {
-      copy_char_string(result[hIndex][wIndex], strmat1[hIndex][wIndex], length1);
+      string_copy(result[hIndex][wIndex], strmat1[hIndex][wIndex], length1);
     }
     for(int wIndex = 0; wIndex < width2; wIndex += 1)
     {
-      copy_char_string(result[hIndex][wIndex + width1], strmat2[hIndex][wIndex], length2);
+      string_copy(result[hIndex][wIndex + width1], strmat2[hIndex][wIndex], length2);
     }
   }
   return result;
 }
 
-char*** remove_strmat_column(char*** result, char*** strmat, int height, int width, int length, int column)
+char*** strmat_column_remove(char*** result, char*** strmat, int height, int width, int length, int column)
 {
   if(result == NULL || strmat == NULL) return NULL;
 
@@ -113,7 +113,7 @@ char*** remove_strmat_column(char*** result, char*** strmat, int height, int wid
 
     for(int hIndex = 0; hIndex < height; hIndex += 1)
     {
-      copy_char_string(result[hIndex][rWidthIndex], strmat[hIndex][wIndex], length);
+      string_copy(result[hIndex][rWidthIndex], strmat[hIndex][wIndex], length);
     }
     rWidthIndex += 1;
   }
@@ -133,7 +133,7 @@ int strmat_header_index(char*** strmat, int height, int width, const char header
   return -1;
 }
 
-bool strmat_index_filter(char*** result, char*** strmat, int height, int width, int length, const int indexes[], int amount)
+bool strmat_filter_index(char*** result, char*** strmat, int height, int width, int length, const int indexes[], int amount)
 {
   if(result == NULL || strmat == NULL || indexes == NULL) return false;
 
@@ -145,7 +145,7 @@ bool strmat_index_filter(char*** result, char*** strmat, int height, int width, 
 
     for(int hIndex = 0; hIndex < height; hIndex += 1)
     {
-      copy_char_string(result[hIndex][index], strmat[hIndex][wIndex], length);
+      string_copy(result[hIndex][index], strmat[hIndex][wIndex], length);
     }
   }
   return true;
@@ -159,7 +159,7 @@ bool strmat_column_strarr(char** strarr, char*** strmat, int height, int width, 
  
   for(int index = 0; index < height; index += 1)
   {
-    copy_char_string(strarr[index], strmat[index][column], length);
+    string_copy(strarr[index], strmat[index][column], length);
   }
   return true;
 }

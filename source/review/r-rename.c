@@ -2,7 +2,7 @@
 
 const size_t LINE_BUFFER_SIZE = 256;
 
-int count_file_lines(const char filePath[])
+int fpath_lines_amount(const char filePath[])
 {
   if(filePath == NULL) return 0;
 
@@ -22,7 +22,7 @@ int count_file_lines(const char filePath[])
   return index;
 }
 
-static bool extract_file_lines(char** fileLines, int* amount, FILE* filePointer)
+static bool fpoint_lines_read(char** fileLines, int* amount, FILE* filePointer)
 {
   char buffer[LINE_BUFFER_SIZE];
   int index = 0;
@@ -37,7 +37,7 @@ static bool extract_file_lines(char** fileLines, int* amount, FILE* filePointer)
   return true;
 }
 
-bool extract_text_file(char** fileLines, int* amount, const char filePath[])
+bool fpath_lines_read(char** fileLines, int* amount, const char filePath[])
 {
   if(fileLines == NULL || amount == NULL || filePath == NULL) return false;
 
@@ -45,7 +45,7 @@ bool extract_text_file(char** fileLines, int* amount, const char filePath[])
 
   if(filePointer == NULL) return false;
 
-  bool result = extract_file_lines(fileLines, amount, filePointer);
+  bool result = fpoint_lines_read(fileLines, amount, filePointer);
 
   fclose(filePointer);
   return result;

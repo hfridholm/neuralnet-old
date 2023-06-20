@@ -1,6 +1,6 @@
 #include "../adjust.h"
 
-char* create_char_string(int length)
+char* string_create(int length)
 {
   if(length < 0) return NULL;
 
@@ -13,13 +13,13 @@ char* create_char_string(int length)
   return string;
 }
 
-void free_char_string(char** string, int length)
+void string_free(char** string, int length)
 {
   free(*string);
   *string = NULL;
 }
 
-char* copy_char_string(char* destin, char* string, int length)
+char* string_copy(char* destin, char* string, int length)
 {
   if(destin == NULL || string == NULL) return NULL;
 
@@ -30,7 +30,7 @@ char* copy_char_string(char* destin, char* string, int length)
   return destin;
 }
 
-int trim_string_spaces(char* result, const char string[], int length)
+int string_trim_spaces(char* result, const char string[], int length)
 {
   //if(result == NULL || string == NULL);
 
@@ -50,7 +50,7 @@ int trim_string_spaces(char* result, const char string[], int length)
   return newLength;
 }
 
-int split_string_tokens(char** tokens, int* length, const char string[], const char delim[])
+int string_split_tokens(char** tokens, int* length, const char string[], const char delim[])
 {
   //if(tokens == NULL || length == NULL || string == NULL || delim == NULL);
 
@@ -63,7 +63,7 @@ int split_string_tokens(char** tokens, int* length, const char string[], const c
 
   for(amount = 0; tempToken != NULL; amount += 1)
   {
-    trim_string_spaces(tokens[amount], tempToken, strlen(tempToken));
+    string_trim_spaces(tokens[amount], tempToken, strlen(tempToken));
 
     int strLength = strlen(tokens[amount]) + 1;
 

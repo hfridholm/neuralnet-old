@@ -4,7 +4,6 @@
 * bitmaps for logging information for functions
 * make it possible to save trained model to file
 * come up with a new name for the neural network project
-* rename functions based on Eskil Steenberg's convention
 * create program that creates single header libraries
 
 #Draft Todos

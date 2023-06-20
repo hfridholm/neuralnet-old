@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 
   
   int imgWidth, imgHeight;
-  float** matrix = pixels_nrmliz_matrix(&imgWidth, &imgHeight, imgPath);
+  float** matrix = pixels_nrmliz_matrix_read(&imgWidth, &imgHeight, imgPath);
 
   if(matrix == NULL)
   {
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   int sizes[] = {2, 7, 4, 1};
   Activ activs[] = {ACTIV_SIGMOID, ACTIV_SIGMOID, ACTIV_SIGMOID};
 
-  int maxShape = maximum_layer_shape(sizes, layers);
+  int maxShape = network_sizes_maximum(sizes, layers);
 
   float*** weights = float_matarr_random_create(layers - 1, maxShape, maxShape, -1.0f, +1.0f);
   float** biases = float_matrix_random_create(layers - 1, maxShape, -1.0f, +1.0f);
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
   int epochAmount = 10000;
 
 
-  train_epochs_stcast(network, learnRate, momentum, inputs, targets, imgWidth * imgHeight, epochAmount);
+  network_train_stcast_epochs(network, learnRate, momentum, inputs, targets, imgWidth * imgHeight, epochAmount);
 
 
 
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
       float outInputs[] = {normX, normY};
 
-      frwrd_network_inputs(output, network, outInputs);
+      network_forward(output, network, outInputs);
 
       int index = (yValue * outWidth + xValue);
 
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
   }
 
 
-  write_nrmarr_pixels("../assets/result101.png", outPixels, outWidth, outHeight);
+  pixels_nrmliz_array_write("../assets/result101.png", outPixels, outWidth, outHeight);
 
   float_vector_free(&outPixels, outWidth * outHeight);
 

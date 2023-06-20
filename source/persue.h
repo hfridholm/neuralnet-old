@@ -29,22 +29,24 @@ typedef struct
   float** biases;
 } Network;
 
-extern int maximum_layer_shape(const int networkSizes[], int networkLayers);
+extern int network_sizes_maximum(const int networkSizes[], int networkLayers);
 
 extern float cross_entropy_cost(float* nodes, float* targets, int amount);
 
 
-extern bool frwrd_network_inputs(float* outputs, Network network, float* inputs);
+extern bool network_forward(float* outputs, Network network, float* inputs);
 
-extern void train_epochs_stcast(Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount);
+extern void network_train_stcast_epochs(Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount);
+
+extern void network_train_minbat_epochs(Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount);
 
 
-extern float* pixels_nrmliz_vector(int* imgWidth, int* imgHeight, const char filePath[]);
+extern float* pixels_nrmliz_array_read(int* imgWidth, int* imgHeight, const char filePath[]);
 
-extern float** pixels_nrmliz_matrix(int* imgWidth, int* imgHeight, const char filePath[]);
+extern float** pixels_nrmliz_matrix_read(int* imgWidth, int* imgHeight, const char filePath[]);
 
-extern bool write_nrmmat_pixels(const char filePath[], float** nrmmat, int width, int height);
+extern bool pixels_nrmliz_matrix_write(const char filePath[], float** nrmmat, int width, int height);
 
-extern bool write_nrmarr_pixels(const char filePath[], float* nrmarr, int width, int height);
+extern bool pixels_nrmliz_array_write(const char filePath[], float* nrmarr, int width, int height);
 
 #endif

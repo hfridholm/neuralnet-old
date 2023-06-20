@@ -1,6 +1,6 @@
 #include "../adjust.h"
 
-char** create_string_array(int amount, int length)
+char** strarr_create(int amount, int length)
 {
   if(amount < 0 || length < 0) return NULL;
  
@@ -10,30 +10,30 @@ char** create_string_array(int amount, int length)
 
   for(int index = 0; index < amount; index += 1)
   {
-    strarr[index] = create_char_string(length); 
+    strarr[index] = string_create(length); 
   }
   return strarr;
 }
 
-void free_string_array(char*** strarr, int amount, int length)
+void strarr_free(char*** strarr, int amount, int length)
 {
   if(*strarr == NULL) return;
 
   for(int index = 0; index < amount; index += 1) 
   {
-    free_char_string((*strarr) + index, length);
+    string_free((*strarr) + index, length);
   }
   free(*strarr);
   *strarr = NULL;
 }
 
-char** copy_string_array(char** destin, char** strarr, int amount, int length)
+char** strarr_copy(char** destin, char** strarr, int amount, int length)
 {
   if(destin == NULL || strarr == NULL) return NULL;
  
   for(int index = 0; index < amount; index += 1)
   {
-    copy_char_string(destin[index], strarr[index], length);
+    string_copy(destin[index], strarr[index], length);
   }
   return destin;
 }
@@ -80,7 +80,7 @@ bool strarr_strarr_indexes(int* indexes, char* strarr1[], int amount1, char* str
   return true;
 }
 
-int strarr_single_strings(char** result, char** strarr, int amount1, int length)
+int strarr_unique_strings(char** result, char** strarr, int amount1, int length)
 {
   //if(result == NULL || strarr == NULL);
 
@@ -100,14 +100,14 @@ int strarr_single_strings(char** result, char** strarr, int amount1, int length)
 
     if(!exists)
     {
-      copy_char_string(result[amount2], strarr[index1], length);
+      string_copy(result[amount2], strarr[index1], length);
       amount2 += 1;
     }
   }
   return amount2;
 }
 
-void string_array_tokens(char*** tokens, int* width, int* length, char** strarr, int amount, const char delim[])
+void strarr_split_tokens(char*** tokens, int* width, int* length, char** strarr, int amount, const char delim[])
 {
   //if(tokens == NULL || width == NULL || length == NULL || strarr == NULL || delim == NULL);
 
@@ -115,7 +115,7 @@ void string_array_tokens(char*** tokens, int* width, int* length, char** strarr,
 
   for(int index = 0; index < amount; index += 1)
   {
-    int tempAmount = split_string_tokens(tokens[index], length, strarr[index], delim);
+    int tempAmount = string_split_tokens(tokens[index], length, strarr[index], delim);
 
     if(tempAmount > *width) *width = tempAmount;
   }

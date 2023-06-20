@@ -1,30 +1,30 @@
 #include "../persue.h"
 
-static bool text_file_tokens_t(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[], char** strArray)
+static bool fpath_tokens_body(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[], char** strArray)
 {
-  if(!extract_text_file(strArray, height, filePath)) return false;
+  if(!fpath_lines_read(strArray, height, filePath)) return false;
 
-  string_array_tokens(tokens, width, length, strArray, *height, delim);
+  strarr_split_tokens(tokens, width, length, strArray, *height, delim);
 
   return true;
 }
 
-bool text_file_tokens(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[])
+bool fpath_tokens(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[])
 {
-  char** strArray = create_string_array(256, 256);
+  char** strArray = strarr_create(256, 256);
 
-  bool result = text_file_tokens_t(tokens, height, width, length, filePath, delim, strArray);
+  bool result = fpath_tokens_body(tokens, height, width, length, filePath, delim, strArray);
 
-  free_string_array(&strArray, 256, 256); return result;
+  strarr_free(&strArray, 256, 256); return result;
 }
 
-bool nrmliz_strmat_header(char*** result, char*** strmat, int height, int width, int length, const char header[])
+bool datset_header_nrmliz(char*** result, char*** strmat, int height, int width, int length, const char header[])
 {
   int headerIndex = strmat_header_index(strmat, height, width, header);
 
   if(headerIndex < 0) return false;  
 
-  char** strarr = create_string_array(height, length);
+  char** strarr = strarr_create(height, length);
 
   strmat_column_strarr(strarr, strmat, height, width, length, headerIndex);
 
@@ -48,28 +48,28 @@ bool nrmliz_strmat_header(char*** result, char*** strmat, int height, int width,
   float_vector_free(&vector, height - 1);
 
 
-  alloc_strmat_column(result, strmat, height, width, length, strarr, length, headerIndex);
+  strmat_column_alloc(result, strmat, height, width, length, strarr, length, headerIndex);
 
   
-  free_string_array(&strarr, height, length);
+  strarr_free(&strarr, height, length);
 
   return true;
 }
 
-bool nrmliz_strmat_headers(char*** result, char*** strmat, int height, int width, int length, char* headers[], int amount)
+bool datset_headers_nrmliz(char*** result, char*** strmat, int height, int width, int length, char* headers[], int amount)
 {
   if(amount <= 0) return false;
 
-  nrmliz_strmat_header(result, strmat, height, width, length, headers[0]);
+  datset_header_nrmliz(result, strmat, height, width, length, headers[0]);
 
   for(int index = 1; index < amount; index += 1)
   {
-    nrmliz_strmat_header(result, result, height, width, length, headers[index]);
+    datset_header_nrmliz(result, result, height, width, length, headers[index]);
   }
   return true;
 }
 
-bool onehot_string_matrix(char*** result, char** strarr1, int height, char** strarr2, int width)
+bool strarrs_onehot_matrix(char*** result, char** strarr1, int height, char** strarr2, int width)
 {
   for(int hIndex = 0; hIndex < height; hIndex += 1)
   {
@@ -85,155 +85,111 @@ bool onehot_string_matrix(char*** result, char** strarr1, int height, char** str
   return result;
 }
 
-bool onehot_strmat_header(char*** result, int* newWidth, char*** strmat, int height, int width, int length, const char header[])
+bool datset_header_onehot(char*** result, int* newWidth, char*** strmat, int height, int width, int length, const char header[])
 {
   int headerIndex = strmat_header_index(strmat, height, width, header);
 
   if(headerIndex < 0) return false;
 
 
-  char** columnStrarr = create_string_array(height, length); 
+  char** columnStrarr = strarr_create(height, length); 
 
   strmat_column_strarr(columnStrarr, strmat + 1, height - 1, width, length, headerIndex);
 
 
-  char** singleStrarr = create_string_array(height - 1, length);
+  char** singleStrarr = strarr_create(height - 1, length);
 
-  int singleAmount = strarr_single_strings(singleStrarr, columnStrarr, height - 1, length);
+  int singleAmount = strarr_unique_strings(singleStrarr, columnStrarr, height - 1, length);
 
   
-  char*** newStrmat = create_string_matrix(height - 1, singleAmount, length);
+  char*** newStrmat = strmat_create(height - 1, singleAmount, length);
 
-  onehot_string_matrix(newStrmat, columnStrarr, height - 1, singleStrarr, singleAmount);
+  strarrs_onehot_matrix(newStrmat, columnStrarr, height - 1, singleStrarr, singleAmount);
 
 
-  char*** addStrmat = create_string_matrix(height, singleAmount, length);
+  char*** addStrmat = strmat_create(height, singleAmount, length);
 
-  copy_string_array(addStrmat[0], singleStrarr, singleAmount, length);
+  strarr_copy(addStrmat[0], singleStrarr, singleAmount, length);
   
-  copy_string_matrix(addStrmat + 1, newStrmat, height - 1, singleAmount, length);
+  strmat_copy(addStrmat + 1, newStrmat, height - 1, singleAmount, length);
 
   *newWidth = width - 1 + singleAmount;
 
 
-  char*** tempStrmat = create_string_matrix(height, width, length);
+  char*** tempStrmat = strmat_create(height, width, length);
 
-  remove_strmat_column(tempStrmat, strmat, height, width, length, headerIndex); 
+  strmat_column_remove(tempStrmat, strmat, height, width, length, headerIndex); 
 
-  merge_strmat_columns(result, tempStrmat, height, width - 1, length, addStrmat, singleAmount, length);
+  strmats_add_columns(result, tempStrmat, height, width - 1, length, addStrmat, singleAmount, length);
 
-  free_string_matrix(&tempStrmat, height, width, length);
+  strmat_free(&tempStrmat, height, width, length);
 
 
-  free_string_matrix(&addStrmat, height, singleAmount, length);
+  strmat_free(&addStrmat, height, singleAmount, length);
 
-  free_string_matrix(&newStrmat, height - 1, singleAmount, length);
+  strmat_free(&newStrmat, height - 1, singleAmount, length);
 
-  free_string_array(&singleStrarr, height - 1, length);
+  strarr_free(&singleStrarr, height - 1, length);
 
-  free_string_array(&columnStrarr, height, length);
+  strarr_free(&columnStrarr, height, length);
 
   return true;
 }
 
-bool onehot_strmat_headers(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* headers[], int amount)
+bool datset_headers_onehot(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* headers[], int amount)
 {
   if(amount <= 0) return false;
 
-  if(!onehot_strmat_header(result, newWidth, strmat, height, width, length, headers[0])) return false; 
+  if(!datset_header_onehot(result, newWidth, strmat, height, width, length, headers[0])) return false; 
 
   for(int index = 1; index < amount; index += 1)
   {
-    //char*** strmatCopy = duplic_string_matrix(result, height, *newWidth, 10);
+    //char*** strmatCopy = strmat_duplic(result, height, *newWidth, 10);
 
-    if(!onehot_strmat_header(result, newWidth, result, height, *newWidth, length, headers[index])) return false; 
+    if(!datset_header_onehot(result, newWidth, result, height, *newWidth, length, headers[index])) return false; 
 
-    //free_string_matrix(strmatCopy, height, *newWidth, 10);
+    //strmat_free(strmatCopy, height, *newWidth, 10);
   }
   return true;
 }
 
-bool tokens_inpts_trgts(float** inputs, float** targets, char*** tokens, int height, int width, int length, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount)
+bool datset_indexes_inpts_trgts(float** inputs, float** targets, char*** tokens, int height, int width, int length, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount)
 {
-  char*** inputTokens = create_string_matrix(height, width, length);
-  char*** targetTokens = create_string_matrix(height, width, length);
+  char*** inputTokens = strmat_create(height, width, length);
+  char*** targetTokens = strmat_create(height, width, length);
 
-  if(!strmat_index_filter(inputTokens, tokens, height, width, length, inputIndexis, inputAmount));
-  if(!strmat_index_filter(targetTokens, tokens, height, width, length, targetIndexis, targetAmount));
+  if(!strmat_filter_index(inputTokens, tokens, height, width, length, inputIndexis, inputAmount));
+  if(!strmat_filter_index(targetTokens, tokens, height, width, length, targetIndexis, targetAmount));
 
   strmat_float_matrix(inputs, inputTokens, height, inputAmount);
   strmat_float_matrix(targets, targetTokens, height, targetAmount);
 
-  free_string_matrix(&inputTokens, height, width, length);
-  free_string_matrix(&targetTokens, height, width, length);
+  strmat_free(&inputTokens, height, width, length);
+  strmat_free(&targetTokens, height, width, length);
 
   return true;
 }
 
-static bool csv_indexes_inptrgs_t(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[], char*** tokens)
+bool datset_headers_inpts_trgts(float** inputs, float** targets, char*** tokens, int height, int width, int length, char* inputHeaders[], int inputAmount, char* targetHeaders[], int targetAmount)
 {
-  int tWidth = 0, tHeight = 0, tLength = 0;
-
-  if(!text_file_tokens(tokens, &tHeight, &tWidth, &tLength, filePath, ",")) return false;
-
-  *height = tHeight - 1;
-
-  for(int hIndex = 0; hIndex < tHeight; hIndex += 1)
-  {
-    for(int wIndex = 0; wIndex < tWidth; wIndex += 1)
-    {
-      if(wIndex == tWidth - 1) printf("%s\n", tokens[hIndex][wIndex]);
-      else printf("%s | ", tokens[hIndex][wIndex]);
-    }
-  }
-
-  return tokens_inpts_trgts(inputs, targets, tokens + 1, tHeight - 1, tWidth, tLength, inputIndexis, inputAmount, targetIndexis, targetAmount);
-}
-
-bool csv_indexes_inptrgs(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[])
-{
-  char*** tokens = create_string_matrix(100, 10, 10);
-
-  bool result = csv_indexes_inptrgs_t(inputs, targets, height, inputIndexis, inputAmount, targetIndexis, targetAmount, filePath, tokens);
-
-  free_string_matrix(&tokens, 100, 10, 10); return result;
-}
-
-static bool csv_headers_inptrgs_t(float** inputs, float** targets, int* height, char* inputHeaders[], int inputAmount, char* targetHeaders[], int targetAmount, const char filePath[], char*** tokens)
-{
-  int tWidth = 0, tHeight = 0, tLength = 0;
-
-  if(!text_file_tokens(tokens, &tHeight, &tWidth, &tLength, filePath, ",")) return false;
-
-  *height = tHeight - 1;
-
-  for(int hIndex = 0; hIndex < tHeight; hIndex += 1)
-  {
-    for(int wIndex = 0; wIndex < tWidth; wIndex += 1)
-    {
-      if(wIndex == tWidth - 1) printf("%s\n", tokens[hIndex][wIndex]);
-      else printf("%s | ", tokens[hIndex][wIndex]);
-    }
-  }
-
-  int* inputIndexis = malloc(sizeof(int) * inputAmount);
+  int* inputIndexis = malloc(sizeof(int) * targetAmount);
   int* targetIndexis = malloc(sizeof(int) * targetAmount);
 
-  if(!strarr_strarr_indexes(inputIndexis, tokens[0], tWidth, inputHeaders, inputAmount))
+  if(!strarr_strarr_indexes(inputIndexis, tokens[0], width, inputHeaders, inputAmount))
   {
     index_array_free(&inputIndexis, inputAmount);
     index_array_free(&targetIndexis, targetAmount);
     return false;
   }
 
-  if(!strarr_strarr_indexes(targetIndexis, tokens[0], tWidth, targetHeaders, targetAmount))
+  if(!strarr_strarr_indexes(targetIndexis, tokens[0], width, targetHeaders, targetAmount))
   {
     index_array_free(&inputIndexis, inputAmount);
     index_array_free(&targetIndexis, targetAmount);
     return false;
   }
 
-  bool result = tokens_inpts_trgts(inputs, targets, tokens + 1, tHeight - 1, tWidth, tLength, inputIndexis, inputAmount, targetIndexis, targetAmount);
+  bool result = datset_indexes_inpts_trgts(inputs, targets, tokens + 1, height - 1, width, length, inputIndexis, inputAmount, targetIndexis, targetAmount);
 
   index_array_free(&inputIndexis, inputAmount);
   index_array_free(&targetIndexis, targetAmount);
@@ -241,18 +197,65 @@ static bool csv_headers_inptrgs_t(float** inputs, float** targets, int* height, 
   return result;
 }
 
-bool csv_headers_inptrgs(float** inputs, float** targets, int* height, char* inputHeaders[], int inputAmount, char* targetHeaders[], int targetAmount, const char filePath[])
+static bool fpath_indexes_inpts_trgts_body(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[], char*** tokens)
 {
-  char*** tokens = create_string_matrix(100, 10, 10);
+  int tWidth = 0, tHeight = 0, tLength = 0;
 
-  bool result = csv_headers_inptrgs_t(inputs, targets, height, inputHeaders, inputAmount, targetHeaders, targetAmount, filePath, tokens);
+  if(!fpath_tokens(tokens, &tHeight, &tWidth, &tLength, filePath, ",")) return false;
 
-  free_string_matrix(&tokens, 100, 10, 10); return result;
+  *height = tHeight - 1;
+
+  for(int hIndex = 0; hIndex < tHeight; hIndex += 1)
+  {
+    for(int wIndex = 0; wIndex < tWidth; wIndex += 1)
+    {
+      if(wIndex == tWidth - 1) printf("%s\n", tokens[hIndex][wIndex]);
+      else printf("%s | ", tokens[hIndex][wIndex]);
+    }
+  }
+  return datset_indexes_inpts_trgts(inputs, targets, tokens + 1, tHeight - 1, tWidth, tLength, inputIndexis, inputAmount, targetIndexis, targetAmount);
 }
 
-bool prepare_strmat_data(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* onehotHeaders[], int onehotAmount, char* nrmlizHeaders[], int nrmlizAmount)
+bool fpath_indexes_inpts_trgts(float** inputs, float** targets, int* height, const int inputIndexis[], int inputAmount, const int targetIndexis[], int targetAmount, const char filePath[])
 {
-  if(!onehot_strmat_headers(result, newWidth, strmat, height, width, length, onehotHeaders, onehotAmount)) return false;
+  char*** tokens = strmat_create(100, 10, 10);
 
-  return nrmliz_strmat_headers(result, result, height, *newWidth, length, nrmlizHeaders, nrmlizAmount);
+  bool result = fpath_indexes_inpts_trgts_body(inputs, targets, height, inputIndexis, inputAmount, targetIndexis, targetAmount, filePath, tokens);
+
+  strmat_free(&tokens, 100, 10, 10); return result;
+}
+
+static bool fpath_headers_inpts_trgts_body(float** inputs, float** targets, int* height, char* inputHeaders[], int inputAmount, char* targetHeaders[], int targetAmount, const char filePath[], char*** tokens)
+{
+  int tWidth = 0, tHeight = 0, tLength = 0;
+
+  if(!fpath_tokens(tokens, &tHeight, &tWidth, &tLength, filePath, ",")) return false;
+
+  *height = tHeight - 1;
+
+  for(int hIndex = 0; hIndex < tHeight; hIndex += 1)
+  {
+    for(int wIndex = 0; wIndex < tWidth; wIndex += 1)
+    {
+      if(wIndex == tWidth - 1) printf("%s\n", tokens[hIndex][wIndex]);
+      else printf("%s | ", tokens[hIndex][wIndex]);
+    }
+  }
+  return datset_headers_inpts_trgts(inputs, targets, tokens, tHeight, tWidth, tLength, inputHeaders, inputAmount, targetHeaders, targetAmount);
+}
+
+bool fpath_headers_inpts_trgts(float** inputs, float** targets, int* height, char* inputHeaders[], int inputAmount, char* targetHeaders[], int targetAmount, const char filePath[])
+{
+  char*** tokens = strmat_create(100, 10, 10);
+
+  bool result = fpath_headers_inpts_trgts_body(inputs, targets, height, inputHeaders, inputAmount, targetHeaders, targetAmount, filePath, tokens);
+
+  strmat_free(&tokens, 100, 10, 10); return result;
+}
+
+bool datset_headers_prepare(char*** result, int* newWidth, char*** strmat, int height, int width, int length, char* onehotHeaders[], int onehotAmount, char* nrmlizHeaders[], int nrmlizAmount)
+{
+  if(!datset_headers_onehot(result, newWidth, strmat, height, width, length, onehotHeaders, onehotAmount)) return false;
+
+  return datset_headers_nrmliz(result, result, height, *newWidth, length, nrmlizHeaders, nrmlizAmount);
 }

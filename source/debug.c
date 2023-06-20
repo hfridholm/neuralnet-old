@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  printf("%s: %d lines\n", filePath, count_file_lines(filePath));
+  printf("%s: %d lines\n", filePath, fpath_lines_amount(filePath));
 
   return 0;
 }
