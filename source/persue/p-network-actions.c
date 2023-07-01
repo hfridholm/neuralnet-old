@@ -256,6 +256,15 @@ bool network_forward(float* outputs, Network network, float* inputs)
   return true;
 }
 
+static unsigned long long mills_get_current()
+{
+  struct timeval time;
+
+  gettimeofday(&time, NULL);
+
+  return time.tv_sec * 1000 + time.tv_usec / 1000;
+}
+
 static void network_train_stcast_epoch(float*** weightDeltas, float** biasDeltas, Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
   int maxShape = network_sizes_maximum(network.sizes, network.layers);
@@ -277,8 +286,34 @@ static void network_train_stcast_epoch(float*** weightDeltas, float** biasDeltas
   index_array_free(&randIndexes, batchSize);
 }
 
-void network_train_stcast_epochs(Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount)
+void _network_train_stcast_epochs(Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount, unsigned long totalMills, unsigned long long startMills, float*** weightDeltas, float** biasDeltas, float*** oldWeightDeltas, float** oldBiasDeltas)
 {
+  if(epochAmount <= 0 && totalMills <= 0)
+  {
+    printf("epochAmount == 0 && totalMills == 0\n");
+    return;
+  }
+
+  int epochIndex = 0;
+
+  while(true)
+  {
+    if(epochAmount > 0)
+    {
+      if(epochIndex++ >= epochAmount) break;
+    }
+    if(totalMills > 0)
+    {
+      if(mills_get_current() - startMills > totalMills) break;
+    }
+    network_train_stcast_epoch(weightDeltas, biasDeltas, network, learnRate, momentum, inputs, targets, batchSize, oldWeightDeltas, oldBiasDeltas);
+  }
+}
+
+void network_train_stcast_epochs(Network network, float learnRate, float momentum, float** inputs, float** targets, int batchSize, int epochAmount, unsigned long totalMills)
+{
+  unsigned long long startMills = mills_get_current();
+
   int maxShape = network_sizes_maximum(network.sizes, network.layers);
 
   float*** weightDeltas = float_matarr_create(network.layers - 1, maxShape, maxShape);
@@ -287,10 +322,7 @@ void network_train_stcast_epochs(Network network, float learnRate, float momentu
   float*** oldWeightDeltas = float_matarr_create(network.layers - 1, maxShape, maxShape);
   float** oldBiasDeltas = float_matrix_create(network.layers - 1, maxShape);
 
-  for(int epochIndex = 0; epochIndex < epochAmount; epochIndex += 1)
-  {
-    network_train_stcast_epoch(weightDeltas, biasDeltas, network, learnRate, momentum, inputs, targets, batchSize, oldWeightDeltas, oldBiasDeltas);
-  }
+  _network_train_stcast_epochs(network, learnRate, momentum, inputs, targets, batchSize, epochAmount, totalMills, startMills, weightDeltas, biasDeltas, oldWeightDeltas, oldBiasDeltas);
 
   float_matarr_free(&oldWeightDeltas, network.layers - 1, maxShape, maxShape);
   float_matrix_free(&oldBiasDeltas, network.layers - 1, maxShape);

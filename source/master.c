@@ -53,9 +53,12 @@ int main(int argc, char* argv[])
 
 
 
-  int layers = 4;
-  int sizes[] = {2, 7, 4, 1};
-  Activ activs[] = {ACTIV_SIGMOID, ACTIV_SIGMOID, ACTIV_SIGMOID};
+  int sizes[] = {2, 8, 8, 16, 8, 8, 1};
+  Activ activs[] = {ACTIV_RELU, ACTIV_RELU, ACTIV_RELU, ACTIV_RELU, ACTIV_RELU,  ACTIV_SIGMOID};
+
+  int layers = sizeof(sizes) / sizeof(int);
+
+  printf("layers: %d\n", layers);
 
   int maxShape = network_sizes_maximum(sizes, layers);
 
@@ -65,13 +68,11 @@ int main(int argc, char* argv[])
   Network network = {layers, sizes, activs, weights, biases};
 
 
-  float learnRate = 0.1;
+  float learnRate = 0.0009;
   float momentum = 0.1;
-  int epochAmount = 10000;
 
 
-  network_train_stcast_epochs(network, learnRate, momentum, inputs, targets, imgWidth * imgHeight, epochAmount);
-
+  network_train_stcast_epochs(network, learnRate, momentum, inputs, targets, imgWidth * imgHeight, 0, 20 * 1000);
 
 
   int outWidth = 256;

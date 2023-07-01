@@ -11,7 +11,7 @@
 #include <time.h>
 #include <stdint.h>
 
-extern int fpath_lines_amount(const char filePath[]);
+extern int  fpath_lines_amount(const char filePath[]);
 
 extern bool fpath_lines_read(char** fileLines, int* amount, const char filePath[]);
 
