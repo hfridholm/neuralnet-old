@@ -1,21 +1,69 @@
 #include "../persue.h"
 
-static bool fpath_tokens_body(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[], char** strArray)
+/*
+ * Read the lines of the inputted stream
+ *
+ * RETURN
+ * - int amount | The amount of read lines
+ */
+static int stream_lines_read(char (*lines)[256], FILE* stream)
 {
-  if(!fpath_lines_read(strArray, height, filePath)) return false;
+  char buffer[256];
+  int index = 0;
 
-  strarr_split_tokens(tokens, width, length, strArray, *height, delim);
+  for(index = 0; !feof(stream); index++)
+  {
+    if(fgets(buffer, sizeof(buffer), stream) == NULL) break;
 
-  return true;
+    memset(lines[index], '\0', sizeof(lines[index]));
+
+    sscanf(buffer, "%[^\n]%*c", lines[index]);
+  }
+  return index;
 }
 
-bool fpath_tokens(char*** tokens, int* height, int* width, int* length, const char filePath[], const char delim[])
+/*
+ * Read the lines of the inputted filepath
+ *
+ * RETURN
+ * - SUCCESS | The amount of read lines
+ * - ERROR   | -1
+ */
+static int filepath_lines_read(char (*lines)[256], const char* filepath)
 {
-  char** strArray = strarr_create(256, 256);
+  if(lines == NULL  || filepath == NULL) return -1;
 
-  bool result = fpath_tokens_body(tokens, height, width, length, filePath, delim, strArray);
+  FILE* stream = fopen(filepath, "r");
 
-  strarr_free(&strArray, 256, 256); return result;
+  if(stream == NULL) return -1;
+
+  int amount = stream_lines_read(lines, stream);
+
+  fclose(stream);
+
+  return amount;
+}
+
+/*
+ * Fix: Change to returning status codes
+ *
+ * RETURN
+ * - 0 | Success!
+ * - 1 | Failed to read filepath lines
+ */
+bool fpath_tokens(char*** tokens, int* height, int* width, int* length, const char filepath[], const char delim[])
+{
+  char strarr[256][256];
+
+  int lines = filepath_lines_read(strarr, filepath);
+
+  if(lines < 0) return false; // 1
+
+  *height = lines;
+
+  strarr_split_tokens(tokens, width, length, (char**) strarr, *height, delim);
+
+  return true; // 0
 }
 
 bool datset_header_nrmliz(char*** result, char*** strmat, int height, int width, int length, const char header[])
