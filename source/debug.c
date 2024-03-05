@@ -1,7 +1,6 @@
 #include "adjust.h"
 #include "persue.h"
 #include "secure.h"
-#include "review.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

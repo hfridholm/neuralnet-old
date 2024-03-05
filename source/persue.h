@@ -16,7 +16,6 @@
 #include "stb_image_write.h"
 
 #include "secure.h"
-#include "review.h"
 #include "adjust.h"
 
 typedef enum { ACTIV_NONE, ACTIV_SIGMOID, ACTIV_RELU, ACTIV_TANH, ACTIV_SOFTMAX } Activ;
