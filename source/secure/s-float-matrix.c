@@ -246,7 +246,7 @@ bool float_matrix_print(float** matrix, int height, int width)
 
   for(int hIndex = 0; hIndex < height; hIndex += 1)
   {
-    if(!float_vector_print(matrix[hIndex], width)) return false;
+    float_vector_print(matrix[hIndex], width);
   }
   return true;
 }

@@ -3,7 +3,7 @@
 bool pixels_nrmliz_array_write(const char filePath[], float* nrmarr, int width, int height)
 {
   uint8_t* pixels = malloc(sizeof(uint8_t) * width * height);
- 
+
   for(int index = 0; index < (width * height); index += 1)
   {
     pixels[index] = (uint8_t) (nrmarr[index] * 255); 

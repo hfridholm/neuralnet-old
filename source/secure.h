@@ -13,33 +13,33 @@
 
 // Float Vector
 
-extern float    float_random_create(float minimum, float maximum);
+extern float*   float_vector_create(size_t length);
 
-extern float*   float_vector_create(int length);
+extern void     float_vector_free(float** vector, size_t length);
 
-extern bool     float_vector_minmax(float* minimum, float* maximum, float* vector, int length);
 
-extern void     float_vector_free(float** vector, int length);
+extern float*   float_vector_copy(float* destin, const float* source, size_t length);
 
-extern float*   float_vector_random_fill(float* vector, int length, float minimum, float maximum);
+extern float*   float_vector_duplic(const float* vector, size_t length);
 
-extern float*   float_vector_scale_multi(float* result, float* vector, int length, float scalor);
 
-extern float*   float_vector_elem_multi(float* result, float* vector1, float* vector2, int length);
+extern int      float_vector_minmax(float* min, float* max, const float* vector, size_t length);
 
-extern float*   float_vector_elem_addit(float* result, float* vector1, float* vector2, int length);
+extern float    float_vector_sum(const float* vector, size_t length);
 
-extern float**  float_vector_dotprod(float** result, float* vector1, int length1, float* vector2, int length2);
+extern float    float_random_create(float min, float max);
 
-extern float*   float_vector_copy(float* destin, float* vector, int length);
+extern float*   float_vector_random_fill(float* vector, size_t length, float min, float max);
 
-extern float*   float_vector_duplic(float* vector, int length);
+extern float*   float_vector_scale_multi(float* result, const float* vector, size_t length, float scalor);
 
-extern float    float_vector_maximum(float* vector, int length);
+extern float*   float_vector_elem_multi(float* result, const float* vector1, const float* vector2, size_t length);
 
-extern float    float_vector_total(float* vector, int length);
+extern float*   float_vector_elem_addit(float* result, const float* vector1, const float* vector2, size_t length);
 
-extern bool     float_vector_print(float* vector, int length);
+extern float**  float_vector_dotprod(float** result, const float* vector1, size_t length1, const float* vector2, size_t length2);
+
+extern void     float_vector_print(const float* vector, size_t length);
 
 // Float Matrix
 
@@ -51,9 +51,9 @@ extern float**  float_matrix_create(int height, int width);
 
 extern void     float_matrix_free(float*** matrix, int height, int width);
 
-extern float**  float_matrix_random_create(int height, int width, float minimum, float maximum);
+extern float**  float_matrix_random_create(int height, int width, float min, float max);
 
-extern float**  float_matrix_random_fill(float** matrix, int height, int width, float minimum, float maximum);
+extern float**  float_matrix_random_fill(float** matrix, int height, int width, float min, float max);
 
 extern float**  float_matrix_transp(float** transp, float** matrix, int height, int width);
 
@@ -87,9 +87,9 @@ extern float*** float_matarr_create(int amount, int height, int width);
 
 extern void     float_matarr_free(float**** matarr, int amount, int height, int width);
 
-extern float*** float_matarr_random_create(int amount, int height, int width, float minimum, float maximum);
+extern float*** float_matarr_random_create(int amount, int height, int width, float min, float max);
 
-extern float*** float_matarr_random_fill(float*** matarr, int amount, int height, int width, float minimum, float maximum);
+extern float*** float_matarr_random_fill(float*** matarr, int amount, int height, int width, float min, float max);
 
 extern float*** float_matarr_scale_multi(float*** result, float*** matarr, int amount, int height, int width, float scalor);
 
@@ -101,7 +101,7 @@ extern bool     float_matarr_print(float*** matarr, int amount, int height, int 
 
 // Index Array
 
-extern int  index_random_create(int minimum, int maximum);
+extern int  index_random_create(int min, int max);
 
 extern int* index_array_create(int amount);
 
