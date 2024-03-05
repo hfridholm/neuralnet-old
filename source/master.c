@@ -1,6 +1,7 @@
 #include "adjust.h"
 #include "persue.h"
 #include "secure.h"
+#include "review.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -15,12 +16,15 @@ char* extract_shift_args(int* argc, char*** argv)
   char* result = **argv;
   (*argc) -= 1;
   (*argv) += 1;
+
   return result;
 }
 
 int main(int argc, char* argv[])
 {
   srand(time(NULL));
+
+  info_print("Starting main");
 
   //const char* program =
   extract_shift_args(&argc, &argv);
@@ -99,8 +103,18 @@ int main(int argc, char* argv[])
     }
   }
 
+  char outputPath[128] = "result.png";
 
-  pixels_nrmliz_array_write("../assets/result101.png", outPixels, outWidth, outHeight);
+  const char* outputPathArg = extract_shift_args(&argc, &argv);
+
+  if(outputPathArg != NULL)
+  {
+    memset(outputPath, '\0', sizeof(outputPath));
+
+    strcpy(outputPath, outputPathArg);
+  }
+
+  pixels_nrmliz_array_write(outputPath, outPixels, outWidth, outHeight);
 
   float_vector_free(&outPixels, outWidth * outHeight);
 

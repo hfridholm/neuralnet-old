@@ -49,4 +49,4 @@ extern bool     pixels_nrmliz_matrix_write(const char filePath[], float** nrmmat
 
 extern bool     pixels_nrmliz_array_write(const char filePath[], float* nrmarr, int width, int height);
 
-#endif
+#endif // PERSUE_H

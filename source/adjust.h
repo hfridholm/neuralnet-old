@@ -64,4 +64,4 @@ extern bool     strmat_filter_index(char*** result, char*** strmat, int height, 
 
 extern bool     strmat_column_strarr(char** strarr, char*** strmat, int height, int width, int length, int column);
 
-#endif
+#endif // ADJUST_H

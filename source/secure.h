@@ -109,4 +109,4 @@ extern void index_array_free(int** array, int amount);
 
 extern int* index_array_shuffle(int* array, int amount);
 
-#endif
+#endif // SECURE_H
