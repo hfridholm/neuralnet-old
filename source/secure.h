@@ -85,19 +85,19 @@ extern void     float_matrix_print(float** matrix, size_t height, size_t width);
 
 // Float Matarr
 
-extern float*** float_matarr_create(int amount, int height, int width);
+extern float*** float_matarr_create(size_t amount, size_t height, size_t width);
 
-extern void     float_matarr_free(float**** matarr, int amount, int height, int width);
+extern void     float_matarr_free(float**** matarr, size_t amount, size_t height, size_t width);
 
-extern float*** float_matarr_random_create(int amount, int height, int width, float min, float max);
+extern float*** float_matarr_random_create(size_t amount, size_t height, size_t width, float min, float max);
 
-extern float*** float_matarr_random_fill(float*** matarr, int amount, int height, int width, float min, float max);
+extern float*** float_matarr_random_fill(float*** matarr, size_t amount, size_t height, size_t width, float min, float max);
 
-extern float*** float_matarr_scale_multi(float*** result, float*** matarr, int amount, int height, int width, float scalor);
+extern float*** float_matarr_scale_multi(float*** result, float*** matarr, size_t amount, size_t height, size_t width, float scalor);
 
-extern float*** float_matarr_elem_addit(float*** result, float*** matarr1, float*** matarr2, int amount, int height, int width);
+extern float*** float_matarr_elem_addit(float*** result, float*** matarr1, float*** matarr2, size_t amount, size_t height, size_t width);
 
-extern float*** float_matarr_copy(float*** destin, float*** matarr, int amount, int height, int width);
+extern float*** float_matarr_copy(float*** destin, float*** source, size_t amount, size_t height, size_t width);
 
 extern void     float_matarr_print(float*** matarr, size_t amount, size_t height, size_t width);
 
