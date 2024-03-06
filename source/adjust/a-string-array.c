@@ -107,16 +107,21 @@ int strarr_unique_strings(char** result, char** strarr, int amount1, int length)
   return amount2;
 }
 
-void strarr_split_tokens(char*** tokens, int* width, int* length, char** strarr, int amount, const char delim[])
+/*
+ * Split strings in array using delim and trim the splitted strings
+ * The function assings the amount of split strings in each array
+ *
+ * RETURN
+ * - 0 | Success
+ * - 1 | An inputted argument was NULL
+ */
+int strarr_split_tokens(char*** tokens, size_t* amounts, char** strarr, size_t amount, const char* delim)
 {
-  //if(tokens == NULL || width == NULL || length == NULL || strarr == NULL || delim == NULL);
+  if(tokens == NULL || amounts == NULL || strarr == NULL || delim == NULL) return 1;
 
-  *width = 0; *length = 0;
-
-  for(int index = 0; index < amount; index += 1)
+  for(size_t index = 0; index < amount; index++)
   {
-    int tempAmount = string_split_tokens(tokens[index], length, strarr[index], delim);
-
-    if(tempAmount > *width) *width = tempAmount;
+    amounts[index] = string_split_tokens(tokens[index], NULL, strarr[index], delim);
   }
+  return 0;
 }

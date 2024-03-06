@@ -10,15 +10,16 @@
 
 // String
 
-extern int    string_trim_spaces(char* result, const char string[], int length);
+extern char*  string_create(size_t length);
 
-extern char*  string_copy(char* destin, char* string, int length);
+extern void   string_free(char** string, size_t length);
 
-extern char*  string_create(int length);
+extern char*  string_copy(char* destin, const char* source, size_t length);
 
-extern void   string_free(char** string, int length);
 
-extern int    string_split_tokens(char** tokens, int* length, const char string[], const char delim[]);
+extern size_t string_trim_spaces(char* result, const char* string, size_t length);
+
+extern size_t string_split_tokens(char** tokens, size_t* length, const char* string, const char* delim);
 
 // String Array
 
@@ -34,7 +35,7 @@ extern bool   strarr_float_vector(float* vector, char** strarr, int amount);
 
 extern bool   strarr_strarr_indexes(int* indexes, char* strarr1[], int amount1, char* strarr2[], int amount2);
 
-extern void   strarr_split_tokens(char*** tokens, int* width, int* length, char** strarr, int amount, const char delim[]);
+extern int    strarr_split_tokens(char*** tokens, size_t* amounts, char** strarr, size_t amount, const char* delim);
 
 extern int    strarr_unique_strings(char** result, char** strarr, int amount1, int length);
 

@@ -5,7 +5,6 @@
  *
  * RETURN
  * - int amount | The amount of read lines
- */
 static int stream_lines_read(char (*lines)[256], FILE* stream)
 {
   char buffer[256];
@@ -21,6 +20,7 @@ static int stream_lines_read(char (*lines)[256], FILE* stream)
   }
   return index;
 }
+*/
 
 /*
  * Read the lines of the inputted filepath
@@ -28,7 +28,6 @@ static int stream_lines_read(char (*lines)[256], FILE* stream)
  * RETURN
  * - SUCCESS | The amount of read lines
  * - ERROR   | -1
- */
 static int filepath_lines_read(char (*lines)[256], const char* filepath)
 {
   if(lines == NULL  || filepath == NULL) return -1;
@@ -43,6 +42,7 @@ static int filepath_lines_read(char (*lines)[256], const char* filepath)
 
   return amount;
 }
+*/
 
 /*
  * Fix: Change to returning status codes
@@ -50,7 +50,6 @@ static int filepath_lines_read(char (*lines)[256], const char* filepath)
  * RETURN
  * - 0 | Success!
  * - 1 | Failed to read filepath lines
- */
 bool fpath_tokens(char*** tokens, int* height, int* width, int* length, const char filepath[], const char delim[])
 {
   char strarr[256][256];
@@ -61,10 +60,11 @@ bool fpath_tokens(char*** tokens, int* height, int* width, int* length, const ch
 
   *height = lines;
 
-  strarr_split_tokens(tokens, width, length, (char**) strarr, *height, delim);
+  int status = strarr_split_tokens(tokens, width, length, (char**) strarr, *height, delim);
 
-  return true; // 0
+  return (status == 0) ? true : false; // 0
 }
+*/
 /*
 
 bool datset_header_nrmliz(char*** result, char*** strmat, int height, int width, int length, const char header[])
