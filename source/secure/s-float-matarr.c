@@ -78,15 +78,14 @@ float*** float_matarr_copy(float*** destin, float*** matarr, int amount, int hei
   return destin;
 }
 
-bool float_matarr_print(float*** matarr, int amount, int height, int width)
+void float_matarr_print(float*** matarr, size_t amount, size_t height, size_t width)
 {
-  if(matarr == NULL) return false;
+  if(matarr == NULL) return;
 
-  for(int index = 0; index < amount; index += 1)
+  for(size_t index = 0; index < amount; index++)
   {
-    if(!float_matrix_print(matarr[index], height, width)) return false;
+    float_matrix_print(matarr[index], height, width);
 
     printf("\n");
   }
-  return true;
 }
