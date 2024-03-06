@@ -125,6 +125,24 @@ float* float_vector_scale_multi(float* result, const float* vector, size_t lengt
 }
 
 /*
+ * Add a scalor to every value of the inputted vector
+ * 
+ * RETURN
+ * - SUCCESS | float* result
+ * - ERROR   | NULL
+ */
+float* float_vector_scale_addit(float* result, const float* vector, size_t length, float scalor)
+{
+  if(result == NULL || vector == NULL) return NULL;
+
+  for(size_t index = 0; index < length; index++)
+  {
+    result[index] = (vector[index] + scalor);
+  }
+  return result;
+}
+
+/*
  * Multiply the values of two vectors with each other
  *
  * RETURN

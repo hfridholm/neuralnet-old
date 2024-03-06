@@ -1,51 +1,78 @@
 #include "../secure.h"
 
-int index_random_create(int min, int max)
+/*
+ * Return random index between min and max
+ */
+size_t index_random_create(size_t min, size_t max)
 {
   float fraction = ((float) rand() / (float) RAND_MAX);
 
   return (fraction * (max - min) + min);
 }
 
-int* index_array_create(int amount)
+/*
+ * Create array allocated on the HEAP with values as indexes
+ * Also clean the memory using memset
+ *
+ * RETURN
+ * - SUCCESS | size_t* array
+ * - ERROR   | NULL
+ */
+size_t* index_array_create(size_t amount)
 {
-  if(amount < 0) return NULL;
+  if(amount <= 0) return NULL;
 
-  int* array = malloc(sizeof(int) * amount);
+  size_t* array = malloc(sizeof(size_t) * amount);
 
   if(array == NULL) return NULL;
 
-  for(int index = 0; index < amount; index += 1)
+  for(size_t index = 0; index < amount; index++)
   {
     array[index] = index;
   }
   return array;
 }
 
-void index_array_free(int** array, int amount)
+/*
+ * Free index array from the HEAP using free
+ * Also assigns NULL to pointer
+ */
+void index_array_free(size_t** array, size_t amount)
 {
   free(*array);
+
   *array = NULL;
 }
 
-static int* index_array_switch_index(int* array, int index1, int index2)
+/*
+ * Swap two indexes in index array
+ */
+static size_t* index_array_switch_index(size_t* array, size_t index1, size_t index2)
 {
-  int temp = array[index1];
+  size_t temp = array[index1];
+
   array[index1] = array[index2];
   array[index2] = temp;
 
   return array; 
 }
 
-int* index_array_shuffle(int* array, int amount)
+/*
+ * Shuffle array of indexes
+ *
+ * RETURN
+ * - SUCCESS | size_t* array
+ * - ERROR   | NULL
+ */
+size_t* index_array_shuffle(size_t* array, size_t amount)
 {
   if(array == NULL) return NULL;
 
-  for(int index = 0; index < amount; index += 1)
+  for(size_t index = 0; index < amount; index++)
   {
-    int randIndex = index_random_create(0, amount - 1);
+    size_t random = index_random_create(0, amount - 1);
 
-    index_array_switch_index(array, index, randIndex);
+    array = index_array_switch_index(array, index, random);
   }
   return array;
 }
