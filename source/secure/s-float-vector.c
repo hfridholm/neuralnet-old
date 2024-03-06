@@ -47,7 +47,7 @@ float float_random_create(float min, float max)
  */
 float* float_vector_create(size_t length)
 {
-  if(length < 0) return NULL;
+  if(length <= 0) return NULL;
 
   float* vector = malloc(sizeof(float) * length);
 
@@ -67,6 +67,24 @@ void float_vector_free(float** vector, size_t length)
   free(*vector);
 
   *vector = NULL;
+}
+
+/*
+ *
+ */
+float* float_vector_random_create(size_t length, float min, float max)
+{
+  if(length <= 0) return NULL;
+
+  float* vector = malloc(sizeof(float) * length);
+
+  if(vector == NULL) return NULL;
+
+  for(size_t index = 0; index < length; index++)
+  {
+    vector[index] = float_random_create(min, max);
+  }
+  return vector;
 }
 
 /*
