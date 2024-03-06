@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
   float momentum = 0.1;
 
 
-  network_train_stcast_epochs(network, learnRate, momentum, inputs, targets, imgWidth * imgHeight, 0, 20 * 1000);
+  network_train_stcast_epochs(network, learnRate, momentum, inputs, targets, imgWidth * imgHeight, 0, 1000 * 10);
 
 
   int outWidth = 256;

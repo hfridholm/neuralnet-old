@@ -1,10 +1,10 @@
 #include "../secure.h"
 
-int index_random_create(int minimum, int maximum)
+int index_random_create(int min, int max)
 {
   float fraction = ((float) rand() / (float) RAND_MAX);
 
-  return (fraction * (maximum - minimum) + minimum);
+  return (fraction * (max - min) + min);
 }
 
 int* index_array_create(int amount)
