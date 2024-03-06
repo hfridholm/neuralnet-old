@@ -13,3 +13,6 @@
 - check out the use of errno and maybe implement it
 - normilize inputs based on normalized dataset
 - change index type from int to size_t
+- remove check for size_t < 0 (unsigned int)
+- ensure that destin and source can point to the same memory
+- let the user input NULL to arguments he is not interested in (&length ex)

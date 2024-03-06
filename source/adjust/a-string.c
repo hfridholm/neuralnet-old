@@ -1,9 +1,15 @@
 #include "../adjust.h"
 
-char* string_create(int length)
+/*
+ * Create string allocated on the HEAP using malloc
+ * Also clean the memory using memset
+ *
+ * RETURN
+ * - SUCCESS | char* string
+ * - ERROR   | NULL
+ */
+char* string_create(size_t length)
 {
-  if(length < 0) return NULL;
-
   char* string = malloc(sizeof(char) * length);
 
   if(string == NULL) return NULL;
@@ -13,63 +19,85 @@ char* string_create(int length)
   return string;
 }
 
-void string_free(char** string, int length)
+/*
+ * Free string from the HEAP using free
+ * Also assigns NULL to pointer
+ */
+void string_free(char** string, size_t length)
 {
   free(*string);
+
   *string = NULL;
 }
 
-char* string_copy(char* destin, char* string, int length)
+/*
+ * Copy string from source to destin using memmove
+ *
+ * RETURN
+ * - SUCCESS | char* destin
+ * - ERROR   | NULL
+ */
+char* string_copy(char* destin, const char* source, size_t length)
 {
-  if(destin == NULL || string == NULL) return NULL;
+  if(destin == NULL || source == NULL) return NULL;
 
-  for(int index = 0; index < length; index += 1)
-  {
-    destin[index] = string[index];
-  }
-  return destin;
+  return memmove(destin, source, sizeof(char) * length);
 }
 
-int string_trim_spaces(char* result, const char string[], int length)
+/*
+ * Trip spaces from both the start and the end of the inputted string
+ * The new length of the trimmed string is returned
+ *
+ * RETURN
+ * - size_t newLength
+ */
+size_t string_trim_spaces(char* result, const char* string, size_t length)
 {
-  //if(result == NULL || string == NULL);
+  if(result == NULL || string == NULL) return length;
 
-  int start = 0;
-  while(isspace(string[start]) && start < length) start += 1;
+  size_t start = 0;
+  while(isspace(string[start]) && start < length) start++;
 
-  int stop = length - 1;
-  while(isspace(string[stop]) && stop > start) stop -= 1;
+  size_t stop = (length - 1);
+  while(isspace(string[stop]) && stop > start) stop--;
 
   int newLength = (stop - start + 1);
 
-  for(int index = 0; index < newLength; index += 1)
-  {
-    result[index] = string[index + start];
-  }
+  memmove(result, string + start, sizeof(char) * newLength);
+
   result[newLength] = '\0';
+
   return newLength;
 }
 
-int string_split_tokens(char** tokens, int* length, const char string[], const char delim[])
+/*
+ * Split the inputted string with delim and then trim the tokens
+ * If the user wants, he can pass a poitner to the max token length
+ *
+ * RETURN
+ * - SUCCESS | size_t amount
+ * - ERROR   | 0
+ */
+size_t string_split_tokens(char** tokens, size_t* length, const char* string, const char* delim)
 {
-  //if(tokens == NULL || length == NULL || string == NULL || delim == NULL);
+  if(tokens == NULL || string == NULL || delim == NULL) return 0;
 
   char strCopy[256];
+
   strcpy(strCopy, string);
 
-  char* tempToken = strtok(strCopy, delim);
+  char* token = strtok(strCopy, delim);
 
-  int amount;
+  size_t amount;
 
-  for(amount = 0; tempToken != NULL; amount += 1)
+  for(amount = 0; token != NULL; amount++)
   {
-    string_trim_spaces(tokens[amount], tempToken, strlen(tempToken));
+    size_t strLength = string_trim_spaces(tokens[amount], token, strlen(token));
 
-    int strLength = strlen(tokens[amount]) + 1;
+    // Only assign the max length if it is wanted (not NULL)
+    if(length != NULL && strLength > *length) *length = strLength;
 
-    if(strLength > *length) *length = strLength;
-
-    tempToken = strtok(NULL, delim);
+    token = strtok(NULL, delim);
   }
   return amount;
 }
