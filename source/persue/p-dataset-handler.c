@@ -65,6 +65,7 @@ bool fpath_tokens(char*** tokens, int* height, int* width, int* length, const ch
 
   return true; // 0
 }
+/*
 
 bool datset_header_nrmliz(char*** result, char*** strmat, int height, int width, int length, const char header[])
 {
@@ -307,3 +308,4 @@ bool datset_headers_prepare(char*** result, int* newWidth, char*** strmat, int h
 
   return datset_headers_nrmliz(result, result, height, *newWidth, length, nrmlizHeaders, nrmlizAmount);
 }
+*/

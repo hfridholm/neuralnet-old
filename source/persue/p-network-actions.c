@@ -269,13 +269,13 @@ static void network_train_stcast_epoch(float*** weightDeltas, float** biasDeltas
 {
   int maxShape = network_sizes_maximum(network.sizes, network.layers);
 
-  int* randIndexes = index_array_create(batchSize);
+  size_t* randIndexes = index_array_create(batchSize);
 
   index_array_shuffle(randIndexes, batchSize);
 
   for(int index = 0; index < batchSize; index += 1)
   {
-    int randIndex = randIndexes[index];
+    size_t randIndex = randIndexes[index];
 
     network_train_stcast(weightDeltas, biasDeltas, network, learnRate, momentum, inputs[randIndex], targets[randIndex], oldWeightDeltas, oldBiasDeltas);
 

@@ -173,12 +173,9 @@ float** float_matrix_scale_addit(float** result, float** matrix, size_t height, 
 {
   if(result == NULL || matrix == NULL) return NULL;
 
-  for(size_t hIndex = 0; hIndex < height; hIndex++)
+  for(size_t index = 0; index < height; index++)
   {
-    for(size_t wIndex = 0; wIndex < width; wIndex++)
-    {
-      result[hIndex][wIndex] = (matrix[hIndex][wIndex] + scalor);
-    }
+    result[index] = float_vector_scale_addit(result[index], matrix[index], width, scalor);
   }
   return result;
 }
